@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AX · 00 Intro</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%; height: 100%;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    /* Figma: MARKETING 배경 텍스트 (1060 x 285.509, 화면 정중앙) */
+    .marketing-wrap {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .marketing-wrap img {
+      display: block;
+      width: calc(100% - 100px);   /* 양쪽 50px 패딩 */
+      height: auto;                /* 가로세로 비율 유지 (1060:285.509) */
+    }
+
+    /* Three.js 캔버스 (배경 투명, 키캡만) */
+    canvas {
+      position: fixed;
+      top: 0; left: 0;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+
+
+  <script type="module">
+    import * as THREE from 'https://esm.sh/three@0.166.0';
+    import { GLTFLoader } from 'https://esm.sh/three@0.166.0/examples/jsm/loaders/GLTFLoader';
+    import { RGBELoader } from 'https://esm.sh/three@0.166.0/examples/jsm/loaders/RGBELoader';
+    import { DecalGeometry } from 'https://esm.sh/three@0.166.0/examples/jsm/geometries/DecalGeometry';
+
+    // ── Renderer (alpha: true → 배경 투명) ───────────────────────────
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setClearColor(0xffffff, 1);  // 흰 배경 (Figma 디자인)
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    document.body.appendChild(renderer.domElement);
+
+    // ── Scene & Camera (카메라 고정 — 정면 뷰) ──────────────────────
+    const scene  = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(34, innerWidth / innerHeight, 0.1, 1000);
+
+    let RADIUS = 38;
+    function placeCamera() {
+      // 정면 (z+) 에서 바라봄 — text plane이 항상 정면으로 보임
+      camera.position.set(0, 0, RADIUS);
+      camera.lookAt(0, 0, 0);
+    }
+    placeCamera();
+
+    // ── Mouse-follow: 위치 + 회전이 함께 커서를 따라옴 ──────────────
+    const BASE_ROT_X = Math.PI / 4;   // 기본 위에서 45° 내려다보는 시점
+    const BASE_ROT_Y = Math.PI / 6;   // 살짝 비튼 3/4 뷰
+    const FOLLOW_X   = 0.20;          // 회전 진폭 위아래 (살짝만)
+    const FOLLOW_Y   = 0.30;          // 회전 진폭 좌우 (살짝만)
+
+    let mouseNX = 0, mouseNY = 0;     // 정규화된 마우스 -1..+1
+    let curRotX = BASE_ROT_X;
+    let curRotY = BASE_ROT_Y;
+
+    window.addEventListener('mousemove', e => {
+      mouseNX = (e.clientX / innerWidth  - 0.5) * 2;
+      mouseNY = (e.clientY / innerHeight - 0.5) * 2;
+    });
+
+    // 커서가 화면 밖으로 나가면 → 키캡 자동으로 중앙 복귀
+    function resetToCenter() { mouseNX = 0; mouseNY = 0; }
+    document.documentElement.addEventListener('mouseleave', resetToCenter);
+    document.addEventListener('mouseout', e => {
+      // 윈도우 자체를 벗어난 경우만 (다른 요소로 hover-out 한 게 아닌)
+      if (!e.relatedTarget && !e.toElement) resetToCenter();
+    });
+    window.addEventListener('blur', resetToCenter);   // 다른 창으로 포커스 이동
+
+    // ── 클릭 시 키캡 누르는 모션 (Y 스케일 줄였다가 복귀) ─────────────
+    let pressYScale  = 1;     // 현재 Y 스케일
+    let pressYTarget = 1;     // 목표 Y 스케일
+    let pressTimer = null;
+    window.addEventListener('mousedown', () => {
+      pressYTarget = 0.85;    // 15% 압축
+      if (pressTimer) clearTimeout(pressTimer);
+      pressTimer = setTimeout(() => { pressYTarget = 1; }, 110);
+
+      // 클릭 시 배경 텍스트 토글 (MARKETING ↔ FRONTIERS)
+      textState = (textState + 1) % TEXT_STATES.length;
+      setBackgroundText(TEXT_STATES[textState]);
+    });
+
+    // ── 조명 (HDRI 로드 전 폴백) ───────────────────────────────────
+    scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+    const keyLight = new THREE.DirectionalLight(0xffffff, 1.6);
+    keyLight.position.set(5, 10, 7);
+    scene.add(keyLight);
+    const rimLight = new THREE.DirectionalLight(0xaaccff, 0.9);
+    rimLight.position.set(-6, 4, -8);
+    scene.add(rimLight);
+
+    // ── HDRI (반사·굴절용) ─────────────────────────────────────────
+    new RGBELoader().load(
+      'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_04_1k.hdr',
+      hdr => {
+        hdr.mapping = THREE.EquirectangularReflectionMapping;
+        scene.environment = hdr;
+      }
+    );
+
+    // ── 배경 텍스트: Canvas (실제 렌더 영역 측정으로 잘림 방지) ──
+    const FONT_SIZE    = 600;
+    const FONT_FAMILY  = '"Helvetica Neue", "Helvetica", "Inter", "Arial", sans-serif';
+    const LETTER_SPACE = '-30px';
+    const PAD          = 20;          // 캔버스 안쪽 안전 padding (px)
+
+    let textPlaneAspect = 1;
+
+    function makeTextTexture(text) {
+      // 1. 텍스트의 실제 렌더 폭과 위/아래 ascent/descent 측정
+      const tmp = document.createElement('canvas').getContext('2d');
+      tmp.font = `500 ${FONT_SIZE}px ${FONT_FAMILY}`;
+      if ('letterSpacing' in tmp) tmp.letterSpacing = LETTER_SPACE;
+      const m = tmp.measureText(text);
+      const textW   = Math.ceil(m.width);
+      const ascent  = Math.ceil(m.actualBoundingBoxAscent  || FONT_SIZE * 0.75);
+      const descent = Math.ceil(m.actualBoundingBoxDescent || FONT_SIZE * 0.25);
+      const textH   = ascent + descent;
+
+      // 2. 캔버스 사이즈 = 텍스트 실제 영역 + safety padding
+      const cnvW = textW + PAD * 2;
+      const cnvH = textH + PAD * 2;
+      const cnv = document.createElement('canvas');
+      cnv.width  = cnvW;
+      cnv.height = cnvH;
+      const c = cnv.getContext('2d');
+      c.fillStyle = '#ffffff';
+      c.fillRect(0, 0, cnvW, cnvH);
+      c.fillStyle = '#000000';
+      c.font = `500 ${FONT_SIZE}px ${FONT_FAMILY}`;
+      if ('letterSpacing' in c) c.letterSpacing = LETTER_SPACE;
+      c.textAlign    = 'left';
+      c.textBaseline = 'alphabetic';      // y가 baseline 위치
+      c.fillText(text, PAD, PAD + ascent); // top padding + ascent → baseline
+
+      const tex = new THREE.CanvasTexture(cnv);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.minFilter  = THREE.LinearMipMapLinearFilter;
+      tex.magFilter  = THREE.LinearFilter;
+      tex.anisotropy = 16;
+
+      textPlaneAspect = cnvW / cnvH;
+      return tex;
+    }
+
+    const TEXT_STATES = ['MARKETING', 'FRONTIERS'];
+    let textState = 0;
+    const textPlane = new THREE.Mesh(
+      new THREE.PlaneGeometry(1, 1),
+      new THREE.MeshBasicMaterial({
+        map: makeTextTexture(TEXT_STATES[textState]),
+        toneMapped: false,
+      })
+    );
+    textPlane.position.set(0, 0, -25);
+    textPlane.renderOrder = -1;
+    scene.add(textPlane);
+
+    function setBackgroundText(text) {
+      const oldMap = textPlane.material.map;
+      textPlane.material.map = makeTextTexture(text);
+      textPlane.material.needsUpdate = true;
+      if (oldMap) oldMap.dispose();
+      resizeTextPlane();   // 새 텍스트 비율로 plane 크기 갱신
+    }
+
+    // 화면 양쪽 50px 패딩 + 텍스트 원본 비율 유지
+    function resizeTextPlane() {
+      const distFromCam = camera.position.z - textPlane.position.z;
+      const visH = 2 * distFromCam * Math.tan(camera.fov * Math.PI / 360);
+      const visW = visH * camera.aspect;
+
+      // 50px 패딩 양쪽 → 화면 폭의 (innerW - 100) 만큼 plane 폭으로
+      const PAD_PX = 50;
+      const planeScreenW = Math.max(innerWidth - PAD_PX * 2, 100);
+      const planeWorldW  = visW * planeScreenW / innerWidth;
+      const planeWorldH  = planeWorldW / textPlaneAspect;   // 텍스트 원본 비율 유지
+
+      textPlane.scale.set(planeWorldW, planeWorldH, 1);
+    }
+    resizeTextPlane();
+
+    // ── Load GLB + 머티리얼 dispersion/attenuation 강화 ─────────────
+    let model = null;
+    let modelBaseY = 0;
+
+    new GLTFLoader().load('keycap_ax.glb?v=' + Date.now(), gltf => {
+      const obj = gltf.scene;
+
+      // 키캡 메시 식별 + 머티리얼 설정
+      let keycapMesh = null;
+      let oldAxMesh  = null;
+      obj.traverse(child => {
+        if (!child.isMesh || !child.material) return;
+        const m = child.material;
+
+        // GLB에 들어있던 AX 메시는 일단 숨김 (별도 plane으로 대체)
+        if (!(m.transmission > 0)) {
+          oldAxMesh = child;
+          child.visible = false;
+        }
+
+        if (m.transmission > 0) {
+          keycapMesh = child;
+          m.transmission = 1.0;
+          m.roughness = 0.03;
+          m.ior = 1.55;
+          m.thickness = 6.0;
+          m.attenuationColor = new THREE.Color(1.0, 0.95, 0.92);
+          m.attenuationDistance = 15;
+          m.dispersion = 5.0;
+          m.clearcoat = 1.0;
+          m.clearcoatRoughness = 0.0;
+          m.transparent = true;
+          m.side = THREE.FrontSide;
+
+          // ── Dispersion 강제 증폭: shader chunk의 spread 계수 교체 ──
+          // 기본 Three.js: halfSpread = (ior-1) * 0.025 * dispersion
+          // → 0.025를 0.25로 바꿔 10배 강한 색 분리
+          m.onBeforeCompile = (shader) => {
+            shader.fragmentShader = shader.fragmentShader.replace(
+              /float halfSpread\s*=\s*\(\s*ior\s*-\s*1\.0\s*\)\s*\*\s*0\.025\s*\*\s*dispersion\s*;/,
+              'float halfSpread = ( ior - 1.0 ) * 0.25 * dispersion;'
+            );
+          };
+          m.needsUpdate = true;
+        }
+      });
+
+      // 키캡 메시 bbox + 사이즈 산정
+      const keyBox    = new THREE.Box3().setFromObject(keycapMesh || obj);
+      const keyCenter = keyBox.getCenter(new THREE.Vector3());
+      const fullBox   = new THREE.Box3().setFromObject(obj);
+      const fullSize  = fullBox.getSize(new THREE.Vector3());
+      const maxDim    = Math.max(fullSize.x, fullSize.y, fullSize.z);
+
+      // ── 아이콘 라벨: SVG → Canvas → Plane (키캡 윗면 우하단) ──
+      const keycapW   = fullSize.x;
+      const labelSize = keycapW * 0.13;
+
+      const iconImg = new Image();
+      iconImg.onload = () => {
+        const cnv = document.createElement('canvas');
+        cnv.width = 512; cnv.height = 512;
+        const ctx2 = cnv.getContext('2d');
+        ctx2.clearRect(0, 0, 512, 512);
+        ctx2.drawImage(iconImg, 0, 0, 512, 512);
+
+        const iconTex = new THREE.CanvasTexture(cnv);
+        iconTex.colorSpace = THREE.SRGBColorSpace;
+        iconTex.minFilter = THREE.LinearMipMapLinearFilter;
+        iconTex.magFilter = THREE.LinearFilter;
+        iconTex.anisotropy = 16;
+
+        const label = new THREE.Mesh(
+          new THREE.PlaneGeometry(labelSize, labelSize),
+          new THREE.MeshBasicMaterial({
+            map: iconTex,
+            transparent: true,
+            alphaTest: 0.05,
+            depthTest: false,           // 항상 보임
+            depthWrite: false,
+            toneMapped: false,
+          })
+        );
+        label.renderOrder = 9999;
+
+        // 키캡 윗면 우측 하단 (월드 좌표는 keyBox 기준)
+        label.position.set(
+          keyBox.max.x - keycapW * 0.30,        // 우측 (가장자리에서 30% 안쪽)
+          keyBox.max.y,                          // 윗면
+          keyBox.max.z - fullSize.z * 0.30      // 화면 하단 (camera 쪽)
+        );
+        label.rotation.x = -Math.PI / 2;        // 윗면에 눕힘
+
+        obj.add(label);                          // pivot 회전 따라옴
+      };
+      iconImg.onerror = (e) => console.error('SVG 로드 실패:', e);
+      iconImg.src = 'icon_enter.svg';
+
+      if (keycapMesh) keycapMesh.material.depthWrite = true;
+
+      // ── Pivot 구조: 회전축을 키캡 중앙으로 ───────────────────────
+      // pivot은 화면 중앙에 위치 → pivot 회전 = 키캡 중앙 기준 회전
+      const pivot = new THREE.Group();
+      pivot.add(obj);
+      obj.position.copy(keyCenter).multiplyScalar(-1);  // 키캡 중심을 pivot 원점에
+
+      pivot.position.y = maxDim * 0.08;   // 살짝 위로 올려 시각적 균형
+
+      scene.add(pivot);
+      model = pivot;
+      modelBaseY = pivot.position.y;
+      RADIUS = maxDim * 2.4;
+      placeCamera();
+    });
+
+    // ── Render Loop ──────────────────────────────────────────────────
+    (function tick() {
+      requestAnimationFrame(tick);
+
+      if (model) {
+        const t = performance.now() * 0.001;
+
+        // ── 회전: 마우스 방향으로 살짝 향함 ──
+        const targetRotX = BASE_ROT_X + mouseNY * FOLLOW_X;
+        const targetRotY = BASE_ROT_Y + mouseNX * FOLLOW_Y;
+        curRotX += (targetRotX - curRotX) * 0.06;
+        curRotY += (targetRotY - curRotY) * 0.06;
+        model.rotation.x = curRotX;
+        model.rotation.y = curRotY;
+
+        // ── 위치: 키캡 전체가 커서를 따라 이동 (메인 인터랙션) ──
+        const visH = 2 * camera.position.z * Math.tan(camera.fov * Math.PI / 360);
+        const visW = visH * camera.aspect;
+        const FOLLOW_POS_X = 0.40;   // 화면 너비의 ±40%까지 따라옴
+        const FOLLOW_POS_Y = 0.35;   // 화면 높이의 ±35%까지 따라옴
+        const floatY = Math.sin(t * 0.85) * (RADIUS * 0.010);
+        const targetPosX =  mouseNX * visW * FOLLOW_POS_X;
+        const targetPosY = -mouseNY * visH * FOLLOW_POS_Y + modelBaseY + floatY;
+
+        // 더 빠른 추적 (damping 0.05 → 0.10)
+        model.position.x += (targetPosX - model.position.x) * 0.10;
+        model.position.y += (targetPosY - model.position.y) * 0.10;
+
+        // ── 클릭 시 키캡 누르는 모션: Y 스케일 보간 ──
+        pressYScale += (pressYTarget - pressYScale) * 0.30;
+        // pivot 안의 obj(키캡 데이터)에 적용 → 키캡 local Y 방향으로 압축
+        if (model.children[0]) model.children[0].scale.y = pressYScale;
+      }
+
+      renderer.render(scene, camera);
+    })();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+      resizeTextPlane();
+    });
+  </script>
+</body>
+</html>
