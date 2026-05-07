@@ -4,6 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AX · 00 Intro</title>
+
+  <!-- 외부 호스트 DNS 미리 조회 (TLS 핸드셰이크 단축) -->
+  <link rel="dns-prefetch" href="https://dl.polyhaven.org">
+  <link rel="dns-prefetch" href="https://esm.sh">
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect"   href="https://dl.polyhaven.org" crossorigin>
+  <link rel="preconnect"   href="https://esm.sh" crossorigin>
+
+  <!-- 핵심 자산 미리 로드 (HTML 파싱과 동시에 fetch 시작) -->
+  <link rel="preload" as="fetch" href="keycap_ax.glb" crossorigin="anonymous">
+  <link rel="preload" as="fetch" href="https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_09_1k.hdr" crossorigin="anonymous">
+  <link rel="preload" as="image" href="text_marketing.svg">
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/wanteddev/wanted-sans@v1.0.4/packages/wanted-sans/fonts/webfonts/variable/complete/WantedSansVariable.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -1689,7 +1702,7 @@
         <div class="tools-row">
           <article class="tool-card">
             <div class="tool-card-head">
-              <img class="tool-icon" src="tool_chatgpt.svg" alt="ChatGPT">
+              <img class="tool-icon" loading="lazy" decoding="async" src="tool_chatgpt.svg" alt="ChatGPT">
               <span class="tool-badge paid">유료 권장</span>
             </div>
             <div class="tool-body">
@@ -1702,7 +1715,7 @@
           </article>
           <article class="tool-card">
             <div class="tool-card-head">
-              <img class="tool-icon" src="tool_claude.svg" alt="Claude" style="background:#fcf2ee;padding:8px;">
+              <img class="tool-icon" loading="lazy" decoding="async" src="tool_claude.svg" alt="Claude" style="background:#fcf2ee;padding:8px;">
               <span class="tool-badge paid">유료 권장</span>
             </div>
             <div class="tool-body">
@@ -1717,7 +1730,7 @@
         <div class="tools-row">
           <article class="tool-card">
             <div class="tool-card-head">
-              <img class="tool-icon" src="tool_canva.jpg" alt="Canva">
+              <img class="tool-icon" loading="lazy" decoding="async" src="tool_canva.jpg" alt="Canva">
               <span class="tool-badge free">무료 가능</span>
             </div>
             <div class="tool-body">
@@ -1730,7 +1743,7 @@
           </article>
           <article class="tool-card">
             <div class="tool-card-head">
-              <img class="tool-icon" src="tool_capcut.jpg" alt="CapCut">
+              <img class="tool-icon" loading="lazy" decoding="async" src="tool_capcut.jpg" alt="CapCut">
               <span class="tool-badge free">무료 가능</span>
             </div>
             <div class="tool-body">
@@ -1743,7 +1756,7 @@
           </article>
           <article class="tool-card">
             <div class="tool-card-head">
-              <img class="tool-icon" src="tool_gamma.png" alt="Gamma">
+              <img class="tool-icon" loading="lazy" decoding="async" src="tool_gamma.png" alt="Gamma">
               <span class="tool-badge free">무료 가능</span>
             </div>
             <div class="tool-body">
@@ -1764,7 +1777,7 @@
         <div class="tools-row">
           <article class="tool-card">
             <div class="tool-card-head">
-              <img class="tool-icon" src="tool_runway.png" alt="Runway">
+              <img class="tool-icon" loading="lazy" decoding="async" src="tool_runway.png" alt="Runway">
               <span class="tool-badge free">무료 가능</span>
             </div>
             <div class="tool-body">
@@ -1776,7 +1789,7 @@
           </article>
           <article class="tool-card">
             <div class="tool-card-head">
-              <img class="tool-icon" src="tool_blackkiwi.jpg" alt="BLACKKIWI" style="border-radius:10px;">
+              <img class="tool-icon" loading="lazy" decoding="async" src="tool_blackkiwi.jpg" alt="BLACKKIWI" style="border-radius:10px;">
               <span class="tool-badge free">무료 가능</span>
             </div>
             <div class="tool-body">
@@ -1788,7 +1801,7 @@
           </article>
           <article class="tool-card">
             <div class="tool-card-head">
-              <img class="tool-icon" src="tool_make.svg" alt="Make">
+              <img class="tool-icon" loading="lazy" decoding="async" src="tool_make.svg" alt="Make">
               <span class="tool-badge free">무료 가능</span>
             </div>
             <div class="tool-body">
@@ -1958,7 +1971,7 @@
       </div>
       <article class="instructor-card">
         <div class="instructor-img">
-          <img src="instructor_silhouette.png" alt="">
+          <img src="instructor_silhouette.png" alt="" loading="lazy" decoding="async">
           <div class="instructor-label">
             <p class="role">강사</p>
             <p class="name">김기수</p>
@@ -1974,7 +1987,7 @@
     <div class="instructor-row">
       <article class="instructor-card">
         <div class="instructor-img">
-          <img src="instructor_silhouette.png" alt="">
+          <img src="instructor_silhouette.png" alt="" loading="lazy" decoding="async">
           <div class="instructor-label">
             <p class="role">멘토</p>
             <p class="name">정기수</p>
@@ -1987,7 +2000,7 @@
       </article>
       <article class="instructor-card">
         <div class="instructor-img">
-          <img src="instructor_silhouette.png" alt="">
+          <img src="instructor_silhouette.png" alt="" loading="lazy" decoding="async">
           <div class="instructor-label">
             <p class="role">멘토</p>
             <p class="name">정기수</p>
@@ -2000,7 +2013,7 @@
       </article>
       <article class="instructor-card">
         <div class="instructor-img">
-          <img src="instructor_silhouette.png" alt="">
+          <img src="instructor_silhouette.png" alt="" loading="lazy" decoding="async">
           <div class="instructor-label">
             <p class="role">멘토</p>
             <p class="name">정기수</p>
@@ -2244,7 +2257,6 @@
     import * as THREE from 'https://esm.sh/three@0.166.0';
     import { GLTFLoader } from 'https://esm.sh/three@0.166.0/examples/jsm/loaders/GLTFLoader';
     import { RGBELoader } from 'https://esm.sh/three@0.166.0/examples/jsm/loaders/RGBELoader';
-    import { DecalGeometry } from 'https://esm.sh/three@0.166.0/examples/jsm/geometries/DecalGeometry';
 
     // ── Renderer (alpha: true → 배경 투명) ───────────────────────────
     const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -2492,7 +2504,7 @@
     let modelMaxDim = 0;
     let keycapMaterial = null;
 
-    new GLTFLoader().load('keycap_ax.glb?v=' + Date.now(), gltf => {
+    new GLTFLoader().load('keycap_ax.glb', gltf => {
       const obj = gltf.scene;
 
       // 키캡 메시 식별 + 머티리얼 설정
