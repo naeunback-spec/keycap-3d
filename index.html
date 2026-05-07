@@ -139,6 +139,8 @@
       letter-spacing: -0.015em;  /* Figma: -1.5 */
       white-space: nowrap;
     }
+    /* 모바일 전용 줄바꿈 — 데스크탑에선 숨김 */
+    .mobile-br { display: none; }
 
     /* ── 하단 정보 영역 ────────────────────────────────────────── */
     .ax-footer {
@@ -1361,60 +1363,134 @@
     /* ── 반응형 ────────────────────────────────────────────────── */
     /* 태블릿 브레이크포인트 제거 — 데스크탑에서 모바일(768px)로 직접 전환 */
     @media (max-width: 768px) {
+      .ax-section.intro,
+      html.is-embedded .ax-section.intro { height: 625px; min-height: 625px; }
       .ax-header { top: 32px; width: calc(100% - 64px); }
-      .ax-title  { font-size: 32px; white-space: normal; }
+      .ax-title  { font-size: 40px; white-space: normal; }
+      .mobile-br { display: inline; }   /* 모바일에서만 강제 줄바꿈 */
       .ax-footer { bottom: 32px; width: calc(100% - 64px);
                    grid-template-columns: 1fr; gap: 20px; font-size: 14px; }
       .ax-section.problem { padding: 80px 32px; }
-      .problem-row { flex-direction: column; }
-      .problem-headline { width: 100%; height: auto; gap: 24px; }
+      /* 모바일: headline + 4 카드 2×2 그리드 (15px gap) */
+      .problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+      .problem-row { display: contents; }            /* 행 wrapper 무시 → 모든 카드 grid 직접 자식 */
+      .problem-headline { grid-column: 1 / -1; width: 100%; height: auto; gap: 24px; }
       .problem-headline h2 { font-size: 28px; white-space: normal; }
-      .problem-card { height: auto; min-height: 200px; font-size: 20px; padding: 20px; }
+      .problem-card {
+        flex: none; width: auto; height: auto;
+        min-height: 180px; font-size: 18px; padding: 20px;
+      }
       .ax-section.signal { padding: 80px 32px; gap: 40px; }
       .signal-title { font-size: 28px; }
       .signal-body { font-size: 15px; }
-      .signal-grid { flex-direction: column; }
-      .signal-card { flex: 1 0 auto; }
+      /* 모바일: 2×2 그리드 (15px gap) */
+      .signal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+      .signal-card { flex: none; width: auto; padding: 24px 0; }
       .signal-card.emphasis { height: auto; min-height: 180px; }
       .ax-section.solution { padding: 80px 32px; gap: 32px; }
       .solution-intro { gap: 24px; }
       .solution-title { font-size: 28px; }
       .solution-body { font-size: 15px; }
-      .solution-grid { grid-template-columns: 1fr; }
-      .solution-card { height: auto; min-height: 260px; padding: 28px; }
+      /* 모바일: 2×2 그리드 (15px gap) */
+      .solution-grid { grid-template-columns: 1fr 1fr; gap: 15px; }
+      .solution-card { height: auto; min-height: 220px; padding: 20px; gap: 16px; }
+      .solution-card-icon { width: 40px; height: 40px; }
+      .solution-card h3 { font-size: 16px; }
+      .solution-card p { font-size: 13px; }
       .ax-section.outcome { padding: 80px 32px; }
-      .outcome-row { flex-direction: column; }
-      .outcome-headline { width: 100%; gap: 24px; }
-      .outcome-headline h2 { font-size: 28px; }
+      /* 모바일: headline + 4 카드 2×2 그리드 (problem과 동일 패턴) */
+      .outcome-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+      .outcome-row { display: contents; }
+      .outcome-headline { grid-column: 1 / -1; width: 100%; height: auto; gap: 24px; }
+      .outcome-headline h2 { font-size: 28px; white-space: normal; }
       .outcome-headline-body { font-size: 15px; }
-      .outcome-card { flex: 1 0 auto; height: auto; min-height: 220px; }
-      .outcome-card h3 { font-size: 24px; }
-      .ax-section.curriculum { padding: 80px 32px; gap: 40px; }
-      .curriculum-title { font-size: 28px; }
-      .curriculum-meta { font-size: 14px; }
-      .curriculum-tabs { flex-direction: column; }
-      .tab-list { width: 100%; }
-      .tab-detail { padding: 20px 0 40px; border-top: 1px solid #000; }
-      .tab-detail-title { font-size: 22px; }
-      .detail-row { font-size: 15px; flex-wrap: wrap; }
+      .outcome-card {
+        flex: none; width: auto; height: auto;
+        min-height: 200px; padding: 20px;
+      }
+      .outcome-card h3 { font-size: 18px; }
+      .outcome-card p { font-size: 13px; }
+      /* 모바일 커리큘럼 — Figma 기준 아코디언 레이아웃 */
+      .ax-section.curriculum { padding: 70px 32px; gap: 30px; }
+      .curriculum-head { gap: 5px; }
+      .curriculum-title { font-size: 32px; line-height: 1.4; }
+      .curriculum-meta { font-size: 16px; }
+      .curriculum-meta .meta-line { display: block; }
+      .curriculum-meta .meta-sep { display: none; }
+      .curriculum-disclaimer { font-size: 16px; }
+      .curriculum-body { gap: 10px; }
+      .curriculum-tabs { flex-direction: column; align-items: stretch; }
+      .tab-list { width: 100%; display: flex; flex-direction: column; }
+      /* 탭 row: bg 투명, border 아래쪽만 */
+      .tab-item {
+        background: transparent;
+        color: #000;
+        border: none;
+        border-bottom: 1px solid #000;
+        padding: 10px 0;
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 1.7;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        text-align: left;
+      }
+      .tab-item.active {
+        background: transparent;
+        color: #000;
+        border-top: none;
+        border-bottom: 1px solid #000;
+        font-weight: 600;
+      }
+      .tab-item.active + .tab-item { border-top: none; }
+      .tab-week { width: auto; flex-shrink: 0; }
+      .tab-title { flex: 1; }
+      /* Chevron 아이콘 (활성: 아래, 비활성: 위) */
+      .tab-item::after {
+        content: '';
+        width: 16px;
+        height: 16px;
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>') no-repeat center / contain;
+        flex-shrink: 0;
+        transform: rotate(180deg);
+        transition: transform 0.2s ease;
+      }
+      .tab-item.active::after { transform: rotate(0deg); }
+      /* Detail 패널 (JS가 활성 탭 직후로 이동) */
+      .tab-detail { border-top: none; padding: 20px 0; width: 100%; }
+      .tab-detail-title { display: none; }
+      .detail-row { font-size: 15px; gap: 10px; flex-wrap: nowrap; }
+      .detail-label { width: 40px; flex-shrink: 0; font-size: 15px; }
       .detail-row .detail-label + ul li,
-      .detail-row .detail-label + p { font-size: 14px; }
+      .detail-row .detail-label + p { font-size: 15px; }
+      .detail-row ul { padding-left: 22px; margin-left: 0; }
       .ax-section.tools { padding: 80px 32px; gap: 40px; }
-      .tools-title { font-size: 28px; }
-      .tools-desc { font-size: 15px; }
+      /* 모바일 폰트 위계 — Figma mo_09 기준 */
+      .tools-title { font-size: 32px; }              /* H4_Title/M */
+      .tools-desc { font-size: 16px; }               /* Body1/R */
       .tools-group h3 { font-size: 22px; }
-      .tools-row { flex-direction: column; }
-      .tool-card { flex: 1 0 auto; padding: 20px; }
-      .tool-name { font-size: 22px; }
+      /* 모바일: 모든 카드 2열 그리드, 카드 간격 15px */
+      .tools-grid { gap: 15px; }
+      .tools-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+      .tool-card { flex: none; width: auto; min-width: 0; padding: 16px 8px 16px 0; }
+      .tool-name { font-size: 16px; }                /* Body1/B */
+      .tool-card ul li { font-size: 13px; }          /* Label2/R */
+      .tool-badge { font-size: 13px; }               /* Label2/SB */
+      .tool-icon { width: 50px; height: 50px; }      /* 모바일 아이콘 50px */
       .ax-section.reference { padding: 80px 32px; gap: 32px; }
       .reference-title { font-size: 28px; }
       .reference-desc, .satisfaction-desc { font-size: 15px; }
-      .testimonial-grid { flex-direction: column; }
-      .testimonial-card { flex: 0 0 auto; width: 100%; min-height: auto; padding: 24px; }
-      .testimonial-card p { font-size: 15px; }
+      /* 모바일: 2×2 그리드 (15px gap) */
+      .testimonial-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+      .testimonial-card { flex: none; width: auto; min-height: auto; padding: 20px; gap: 20px; }
+      .testimonial-card p { font-size: 14px; }
       .satisfaction-title { font-size: 22px; }
-      .satisfaction-cards { flex-direction: column; }
-      .score-card { flex: 1 0 auto; padding: 32px; }
+      /* 모바일: 만족도·추천 의향 2열 / AX 역량 성장 체감은 두 컬럼 가득 */
+      .satisfaction-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+      .score-card { flex: none; width: auto; padding: 24px; }
+      .score-card:last-child { grid-column: 1 / -1; }
       .score-num { font-size: 44px; }
       .score-unit { font-size: 20px; }
       .ax-section.benefits { padding: 80px 32px; gap: 32px; }
@@ -1438,14 +1514,26 @@
       .price-tags { gap: 8px; }
       .price-tag { font-size: 12px; }
       .price-notes li { font-size: 13px; }
-      .ax-section.instructors { padding: 80px 32px; gap: 32px; }
+      /* 모바일: 인트로 + 4 카드 2×2 그리드 (problem과 동일 패턴) */
+      .ax-section.instructors {
+        padding: 80px 32px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        align-items: stretch;
+      }
       .instructor-title { font-size: 28px; }
       .instructor-desc { font-size: 15px; }
-      .instructor-row { flex-direction: column; }
-      .instructor-card { width: 100%; }
-      .instructor-img { height: 200px; }
-      .instructor-info { padding: 20px 24px 28px; }
-      .instructor-position, .instructor-bio { font-size: 15px; }
+      .instructor-row { display: contents; }
+      .instructor-intro { grid-column: 1 / -1; gap: 16px; padding-bottom: 17px; }
+      .instructor-card { flex: none; width: auto; }
+      .instructor-img { height: 160px; }
+      .instructor-label { top: 14px; left: 16px; }
+      .instructor-label .role { font-size: 14px; }
+      .instructor-label .name { font-size: 18px; }
+      .instructor-info { padding: 16px 16px 20px; gap: 12px; }
+      .instructor-position, .instructor-bio { font-size: 13px; }
+      .instructor-disclaimer { grid-column: 1 / -1; font-size: 13px; }
       .ax-section.faq { padding: 80px 32px; gap: 40px; }
       .faq-section-title { font-size: 22px; }
       .faq-q { font-size: 15px; }
@@ -1458,7 +1546,7 @@
 
   <section class="ax-section intro">
     <header class="ax-header">
-      <h1 class="ax-title">콘텐츠 제작부터 운영 자동화까지</h1>
+      <h1 class="ax-title">콘텐츠 제작부터<br class="mobile-br"> 운영 자동화까지</h1>
     </header>
 
     <div class="ax-intro-hint" id="introHint">Press the keycap</div>
@@ -1629,7 +1717,7 @@
   <section class="ax-section curriculum">
     <header class="curriculum-head">
       <h2 class="curriculum-title">세부 커리큘럼</h2>
-      <p class="curriculum-meta">총 4회 온라인 라이브 강의 · 매주 화·목 19:00 – 21:00 · 총 8시간</p>
+      <p class="curriculum-meta"><span class="meta-line">총 4회 온라인 라이브 강의</span><span class="meta-sep"> · </span><span class="meta-line">매주 화·목 19:00 – 21:00 · 총 8시간</span></p>
       <p class="curriculum-disclaimer">※ 세부 커리큘럼은 일부 변동 가능합니다.</p>
     </header>
 
@@ -1801,7 +1889,7 @@
           </article>
           <article class="tool-card">
             <div class="tool-card-head">
-              <img class="tool-icon" loading="lazy" decoding="async" src="tool_make.svg" alt="Make">
+              <img class="tool-icon" loading="lazy" decoding="async" src="tool_make.svg" alt="Make" style="background:#fff;padding:12px;">
               <span class="tool-badge free">무료 가능</span>
             </div>
             <div class="tool-body">
@@ -2248,9 +2336,36 @@
       });
     }
 
+    // 모바일에선 detail panel을 활성 탭 직후로 이동 (아코디언 형태)
+    function arrangeCurriculum() {
+      const tabsContainer = document.querySelector('.curriculum-tabs');
+      const tabList = document.querySelector('.tab-list');
+      const tabDetail = document.querySelector('.tab-detail');
+      const activeTab = document.querySelector('.tab-item.active');
+      if (!tabsContainer || !tabList || !tabDetail || !activeTab) return;
+      if (innerWidth <= 768) {
+        // 활성 탭 바로 다음으로 detail 이동
+        if (activeTab.nextSibling !== tabDetail) {
+          activeTab.after(tabDetail);
+        }
+      } else {
+        // 데스크탑: detail을 tabs container 끝으로 복귀
+        if (tabDetail.parentNode !== tabsContainer || tabDetail.previousElementSibling !== tabList) {
+          tabsContainer.appendChild(tabDetail);
+        }
+      }
+    }
+
     document.querySelectorAll('.tab-item').forEach(btn => {
-      btn.addEventListener('click', () => setCurriculumWeek(btn.dataset.week));
+      btn.addEventListener('click', () => {
+        setCurriculumWeek(btn.dataset.week);
+        arrangeCurriculum();
+      });
     });
+
+    // 초기 + 리사이즈 시 레이아웃 재배치
+    arrangeCurriculum();
+    window.addEventListener('resize', arrangeCurriculum);
   </script>
 
   <script type="module">
@@ -2274,8 +2389,28 @@
 
 
     let RADIUS = 38;
+    let modelMaxDim = 0;
+    // 뷰포트 너비 따라 카메라 거리 자동 계산 — 키캡이 좌우 패딩을 침범하지 않도록
+    function calcRadius() {
+      if (!modelMaxDim) return RADIUS;
+      const aspect = innerWidth / innerHeight;
+      const tanHalfFov = Math.tan(camera.fov * Math.PI / 360);
+      const defaultRadius = modelMaxDim * 2.4;
+      // 좌우 패딩 (반응형) — 모바일은 좀 더 여유롭게
+      let sidePadPx = 190;
+      if (innerWidth <= 768) sidePadPx = 50;
+      else if (innerWidth <= 1280) sidePadPx = 80;
+      // 키캡이 차지할 수 있는 최대 화면 가로(px)
+      const maxKeycapPx = Math.max(innerWidth - sidePadPx * 2, 200);
+      // 해당 가로 안에 들어가도록 필요한 카메라 거리
+      // 회전(45°) + 마우스 follow 여유 → SAFETY 1.35 곱해 잘림 방지
+      const SAFETY = 1.35;
+      const requiredRadius = SAFETY * (modelMaxDim * innerWidth) / (maxKeycapPx * 2 * tanHalfFov * aspect);
+      return Math.max(defaultRadius, requiredRadius);
+    }
     function placeCamera() {
       // 정면 (z+) 에서 바라봄 — text plane이 항상 정면으로 보임
+      RADIUS = calcRadius();
       camera.position.set(0, 0, RADIUS);
       camera.lookAt(0, 0, 0);
     }
@@ -2470,14 +2605,16 @@
       if (innerWidth <= 1280) return 80;
       return 190;
     }
+    // 모든 텍스트(MARKETING, FRONTIERS)를 인트로 콘텐츠 영역 너비에 강제 일치
+    // → 너비 동일, 높이는 자기 aspect 따라 결정
     function resizeTextPlane() {
       const distFromCam = camera.position.z - textPlane.position.z;
       const visH = 2 * distFromCam * Math.tan(camera.fov * Math.PI / 360);
       const visW = visH * camera.aspect;
       const PAD_PX = getSidePadPx();
       const planeScreenW = Math.max(innerWidth - PAD_PX * 2, 100);
-      const planeWorldW  = visW * planeScreenW / innerWidth;
-      const planeWorldH  = planeWorldW / textPlaneAspect;
+      const planeWorldW = visW * planeScreenW / innerWidth;
+      const planeWorldH = planeWorldW / textPlaneAspect;
       textPlane.scale.set(planeWorldW, planeWorldH, 1);
     }
     resizeTextPlane();
@@ -2501,7 +2638,6 @@
     // ── Load GLB + 머티리얼 dispersion/attenuation 강화 ─────────────
     let model = null;
     let modelBaseY = 0;
-    let modelMaxDim = 0;
     let keycapMaterial = null;
 
     new GLTFLoader().load('keycap_ax.glb', gltf => {
@@ -2626,18 +2762,33 @@
       dispSource.scale.set(maxDim * 0.5, maxDim * 0.5, 1);
     });
 
-    // 임베드 모드: 인트로 영역(850px) 중앙에 키캡 + MARKETING 위치하도록 shift 계산
-    const EMBED_INTRO_HEIGHT = 850;
+    // 인트로 영역 중앙에 키캡 + MARKETING 위치하도록 shift 계산 (CSS 규칙과 일치)
+    //   - 모바일(≤768px): 625px
+    //   - iframe 임베드: 850px
+    //   - 그 외 데스크탑 단독: 100vh (shift 없음)
     let embedShiftY = 0;
+    function getIntroHeight() {
+      if (innerWidth <= 768) return 625;
+      if (document.documentElement.classList.contains('is-embedded')) return 850;
+      return innerHeight;
+    }
     function updateEmbedShift() {
-      if (document.documentElement.classList.contains('is-embedded')) {
-        const visH = 2 * camera.position.z * Math.tan(camera.fov * Math.PI / 360);
-        const shiftPx = Math.max(0, innerHeight / 2 - EMBED_INTRO_HEIGHT / 2);
-        embedShiftY = shiftPx * (visH / innerHeight);
-      } else {
+      const introH = getIntroHeight();
+      let shiftPx = 0;
+      if (introH >= innerHeight) {
         embedShiftY = 0;
+      } else {
+        const visH = 2 * camera.position.z * Math.tan(camera.fov * Math.PI / 360);
+        shiftPx = (innerHeight - introH) / 2;
+        embedShiftY = shiftPx * (visH / innerHeight);
       }
       textPlane.position.y = embedShiftY;
+
+      // Press the keycap 힌트도 동일한 수직 중앙 정렬 적용
+      const hintEl = document.getElementById('introHint');
+      if (hintEl) {
+        hintEl.style.transform = `translate(-50%, calc(-50% - ${shiftPx}px))`;
+      }
     }
     updateEmbedShift();
 
@@ -2682,6 +2833,7 @@
       camera.aspect = innerWidth / innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(innerWidth, innerHeight);
+      placeCamera();        // 뷰포트 너비 변경 시 키캡 사이즈 자동 조정
       resizeTextPlane();
       updateEmbedShift();   // 뷰포트 변경 시 임베드 shift 재계산
     });
@@ -2706,7 +2858,7 @@
         const problemTop = problemEl.offsetTop;
         const fadeInStart = intro * 0.5;
         const fadeInEnd = problemTop;
-        const MAX_BLUR = 20;
+        const MAX_BLUR = 30;
         if (scroll < fadeInStart) {
           blur = 0;
         } else if (scroll < fadeInEnd) {
