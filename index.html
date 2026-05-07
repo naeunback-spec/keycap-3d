@@ -71,6 +71,14 @@
       height: 100vh;
     }
 
+    /* iframe 임베드 시(wanted 등) — 부모 chrome 고려해 인트로 단축 */
+    html.is-embedded .ax-section.intro {
+      height: 700px;
+      min-height: 560px;
+    }
+    html.is-embedded .ax-header { top: 32px; }
+    html.is-embedded .ax-footer { bottom: 32px; }
+
     /* ── Press the keycap 안내 (인트로 중앙, glass frost) ─────────── */
     .ax-intro-hint {
       position: fixed;
@@ -2121,6 +2129,12 @@
   </section>
 
   <script>
+    // iframe 임베드 자동 감지 — 부모 페이지(예: wanted) chrome이 위아래를 가리는 경우
+    // is-embedded 클래스가 붙으면 인트로 높이가 700px로 단축됨
+    if (window.self !== window.top) {
+      document.documentElement.classList.add('is-embedded');
+    }
+
     // 커리큘럼 탭 데이터 (1주차는 피그마 콘텐츠, 2~4주는 placeholder)
     const CURRICULUM_DATA = {
       '1': {
