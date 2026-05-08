@@ -235,11 +235,11 @@
     .problem-card {
       flex: 1 0 0;                  /* 4 카드 균등 분배 */
       min-width: 0;
-      height: 250px;                /* Figma h-[250px] */
+      min-height: 250px;            /* Figma h-[250px] (콘텐츠 길어지면 늘어남) */
       /* Figma Glass: Refraction 80 + Frost 4 + Light -45° 80% + Depth 20 */
       background: rgba(248, 248, 248, 0.2);
-      backdrop-filter: blur(24px) saturate(180%);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      backdrop-filter: blur(16px) saturate(160%);
+      -webkit-backdrop-filter: blur(16px) saturate(160%);
       border: 1px solid rgba(255, 255, 255, 0.25);
       box-shadow:
         inset 0.5px 0.5px 1px rgba(255, 255, 255, 0.5),
@@ -248,13 +248,16 @@
       color: #14191e;
       border-radius: 24px;
       padding: 24px;
-      overflow: hidden;
-      font-size: 24px;
+      font-size: clamp(15px, 1.8vw, 24px);   /* 뷰포트 좁아지면 자연스럽게 축소 */
       font-weight: 600;
       line-height: 1.5;
       letter-spacing: -0.01em;
     }
-    .problem-card p { margin: 0; }
+    .problem-card p {
+      margin: 0;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+    }
 
     /* ── 03 Market Signal (v2 — 흰 배경, 키캡+MARKETING blur 그대로 비침) ── */
     .ax-section.signal {
@@ -306,7 +309,6 @@
       display: flex;
       flex-direction: column;
       gap: 20px;
-      overflow: hidden;
     }
     .signal-card h3 {
       font-size: 20px;
@@ -315,6 +317,8 @@
       letter-spacing: -0.01em;
       color: #14191e;               /* Figma --black */
       margin: 0;
+      word-break: keep-all;
+      overflow-wrap: break-word;
     }
     .signal-card p {
       font-size: 15px;
@@ -322,16 +326,18 @@
       letter-spacing: -0.01em;
       color: #333;                  /* Figma gy-09 */
       margin: 0;
+      word-break: keep-all;
+      overflow-wrap: break-word;
     }
     .signal-card.emphasis { border-top-color: #14191e; }
     .signal-card .highlight {
-      background: #aceaff;          /* Figma cyan cy-03 */
-      padding: 0 8px;
-      display: inline-block;
+      display: inline;
     }
     .signal-card.emphasis {
       border-top-width: 3px;
-      height: 250px;
+      min-height: 250px;                      /* 콘텐츠 길어지면 자연 확장 */
+      padding: 24px;                          /* 좌측 패딩도 24px (다른 카드는 좌 0) */
+      background: rgba(255, 255, 255, 0.2);   /* Figma 마지막 카드 배경 */
     }
 
     /* ── 04 Solution (v2 — 흰 배경, 키캡+MARKETING blur 그대로 비침) ── */
@@ -382,8 +388,8 @@
       height: 250px;
       /* Figma Glass effect */
       background: rgba(248, 248, 248, 0.2);
-      backdrop-filter: blur(24px) saturate(180%);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      backdrop-filter: blur(16px) saturate(160%);
+      -webkit-backdrop-filter: blur(16px) saturate(160%);
       border: 1px solid rgba(255, 255, 255, 0.25);
       box-shadow:
         inset 0.5px 0.5px 1px rgba(255, 255, 255, 0.5),
@@ -462,8 +468,6 @@
       display: inline-flex;
       align-self: flex-start;
       align-items: center;
-      background: #aceaff;          /* Figma cy-03 */
-      padding: 0 8px;
       font-size: 48px;              /* Figma H4_Title/SB */
       font-weight: 600;
       line-height: 1.5;
@@ -498,8 +502,8 @@
       height: 200px;
       /* Figma Glass effect */
       background: rgba(248, 248, 248, 0.2);
-      backdrop-filter: blur(24px) saturate(180%);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      backdrop-filter: blur(16px) saturate(160%);
+      -webkit-backdrop-filter: blur(16px) saturate(160%);
       border: 1px solid rgba(255, 255, 255, 0.25);
       box-shadow:
         inset 0.5px 0.5px 1px rgba(255, 255, 255, 0.5),
@@ -987,7 +991,7 @@
     }
     .benefits-title {
       font-size: 48px;
-      font-weight: 500;             /* Medium */
+      font-weight: 600;             /* Figma H4_Title/SB */
       line-height: 1.5;
       letter-spacing: -0.015em;
       color: #333;                  /* Figma gy-09 */
@@ -1016,34 +1020,30 @@
       gap: 20px;
     }
     .benefit-card {
-      flex: 1 0 0;
+      flex: 1 1 0;
       min-width: 0;
       background: transparent;
       border: 1px solid #ececec;    /* Figma gy-02 */
       border-radius: 24px;
       padding: 40px;
-      height: 250px;
+      min-height: 250px;            /* 내용이 길어지면 카드가 늘어남 */
       display: flex;
-      align-items: center;          /* Figma justify-center (vertical) */
-      gap: 20px;
+      align-items: flex-start;      /* Figma items-start */
+      gap: 20px;                    /* 컬럼 간 최소 간격 */
     }
     .benefit-left {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      flex-shrink: 0;
-      width: 220px;
+      flex: 0 1 auto;               /* 콘텐츠 크기로 fit — 좁은 뷰포트에서 우측 컬럼 폭 확보 */
+      min-width: 0;
+      max-width: 267px;             /* Figma w-[266.667px] 상한 */
     }
     .benefit-label {
-      display: inline-flex;
-      align-self: flex-start;
-      align-items: center;
-      background: #aceaff;          /* Figma cy-03 cyan pill */
-      padding: 0 8px;
-      font-size: 15px;
-      font-weight: 600;
-      line-height: 1.7;
-      letter-spacing: -0.01em;
+      font-size: 12px;              /* Figma Caption2/M */
+      font-weight: 500;             /* Medium */
+      line-height: 1;
+      letter-spacing: 0;
       color: #14191e;               /* Figma --black */
       margin: 0;
       white-space: nowrap;
@@ -1055,15 +1055,19 @@
       letter-spacing: -0.01em;
       color: #14191e;               /* Figma --black */
       margin: 0;
+      word-break: keep-all;
+      overflow-wrap: break-word;
     }
     .benefit-desc {
-      flex: 1 0 0;
+      flex: 1 1 0;
       min-width: 0;
       font-size: 15px;
       line-height: 1.7;
       letter-spacing: -0.01em;
       color: #333;                  /* Figma gy-09 */
       margin: 0;
+      word-break: keep-all;
+      overflow-wrap: break-word;
     }
 
     /* ── 10 Schedule (v2 — 2열 레이아웃: 좌 헤더 / 우 5 step) ──────── */
@@ -1225,8 +1229,8 @@
       max-width: 1100px;
       /* Figma Glass effect */
       background: rgba(248, 248, 248, 0.2);
-      backdrop-filter: blur(24px) saturate(180%);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      backdrop-filter: blur(16px) saturate(160%);
+      -webkit-backdrop-filter: blur(16px) saturate(160%);
       border: 1px solid rgba(255, 255, 255, 0.25);
       box-shadow:
         inset 0.5px 0.5px 1px rgba(255, 255, 255, 0.5),
@@ -1392,8 +1396,8 @@
       width: 340px;
       /* Figma Glass effect — instructor card 하단 정보 영역 */
       background: rgba(248, 248, 248, 0.2);
-      backdrop-filter: blur(24px) saturate(180%);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      backdrop-filter: blur(16px) saturate(160%);
+      -webkit-backdrop-filter: blur(16px) saturate(160%);
       border: 1px solid rgba(255, 255, 255, 0.25);
       border-top: none;                   /* 위는 이미지와 연결되므로 border 제거 */
       box-shadow:
@@ -1526,6 +1530,41 @@
       letter-spacing: -0.01em;
       color: #fff;
       margin: 0;
+    }
+
+    /* Glass frost 카드 hover lift + frost 강화 — 마우스 환경(데스크톱)에서만 */
+    @media (hover: hover) {
+      /* 카드 자체: transform + (해당되는 경우) backdrop-filter 트랜지션 */
+      .problem-card,
+      .solution-card,
+      .outcome-card,
+      .price-box {
+        transition: transform 0.3s ease,
+                    backdrop-filter 0.3s ease,
+                    -webkit-backdrop-filter 0.3s ease;
+      }
+      .instructor-card { transition: transform 0.3s ease; }
+      .instructor-info {
+        transition: backdrop-filter 0.3s ease,
+                    -webkit-backdrop-filter 0.3s ease;
+      }
+      /* 호버 lift */
+      .problem-card:hover,
+      .solution-card:hover,
+      .outcome-card:hover,
+      .price-box:hover,
+      .instructor-card:hover {
+        transform: translateY(-10px);
+      }
+      /* 호버 시 frost 강도 16px → 24px (saturate도 160% → 180%) */
+      .problem-card:hover,
+      .solution-card:hover,
+      .outcome-card:hover,
+      .price-box:hover,
+      .instructor-card:hover .instructor-info {
+        backdrop-filter: blur(24px) saturate(180%);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
+      }
     }
 
     /* ── 반응형 ────────────────────────────────────────────────── */
@@ -1664,7 +1703,8 @@
       .benefits-title { font-size: 28px; }
       .benefits-desc { font-size: 15px; }
       .benefits-row { flex-direction: column; }
-      .benefit-card { flex-direction: column; padding: 28px; height: auto; gap: 16px; }
+      .benefit-card { flex-direction: column; padding: 28px; min-height: 0; gap: 16px; }
+      .benefit-left { flex: 0 0 auto; width: 100%; }
       .benefit-left { width: 100%; }
       .benefit-name { font-size: 20px; }
       /* 모바일: 헤더 / step 리스트 세로 stack, step row 내부도 세로 stack */
