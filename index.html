@@ -103,9 +103,15 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(255, 255, 255, 0.1);   /* Figma bg */
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      /* Figma Glass effect — Press the keycap 힌트 (다크 캔버스 위 가벼운 frost) */
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow:
+        inset 1px 1px 1px rgba(255, 255, 255, 0.4),
+        inset -1px -1px 1px rgba(0, 0, 0, 0.05),
+        0 4px 16px rgba(0, 0, 0, 0.08);
       border-radius: 9999px;                  /* full pill */
       color: #fff;
       font-family: 'Wanted Sans Variable', 'Wanted Sans', sans-serif;
@@ -129,20 +135,32 @@
       left: 50%;
       transform: translateX(-50%);
       width: calc(100% - 380px);   /* 좌우 190px 패딩 */
-      max-width: 1100px;            /* Figma 디자인 기준 */
+      max-width: 1100px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;                   /* Figma: eyebrow ↔ title */
       pointer-events: none;
     }
+    .ax-eyebrow {
+      font-size: 17px;             /* Figma Body2/SB */
+      font-weight: 600;
+      line-height: 1.7;
+      letter-spacing: -0.01em;
+      color: #14191e;              /* Figma --black */
+      margin: 0;
+    }
     .ax-title {
-      font-size: 64px;
+      font-size: 64px;             /* Figma H3_Display/M */
       font-weight: 500;
       line-height: 1.4;
-      letter-spacing: -0.015em;  /* Figma: -1.5 */
-      white-space: nowrap;
+      letter-spacing: -0.015em;
+      color: #14191e;              /* Figma --black */
+      margin: 0;
     }
     /* 모바일 전용 줄바꿈 — 데스크탑에선 숨김 */
     .mobile-br { display: none; }
 
-    /* ── 하단 정보 영역 ────────────────────────────────────────── */
+    /* ── 하단 정보 영역 (좌: subtitle / 우: 부가 텍스트, 하단 정렬) ─── */
     .ax-footer {
       position: absolute;
       left: 50%;
@@ -150,21 +168,20 @@
       width: calc(100% - 380px);
       max-width: 1100px;
       bottom: 60px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;       /* 두 텍스트 하단 정렬 */
       gap: 40px;
       pointer-events: none;
-      font-size: 17px;
-      line-height: 1.7;
-      letter-spacing: -0.01em;  /* Figma: -1 */
-    }
-    .ax-footer-left .ax-eyebrow {
-      font-weight: 600;
-    }
-    .ax-footer-left .ax-meta,
-    .ax-footer-right p {
+      font-size: 17px;             /* Figma Body2/R */
       font-weight: 400;
+      line-height: 1.7;
+      letter-spacing: -0.01em;
+      color: #333;                 /* Figma gy-09 */
     }
+    .ax-footer p { margin: 0; }
+    .ax-footer .ax-subtitle { text-align: left; }
+    .ax-footer p:last-child { text-align: right; }
 
     /* ── 다크 섹션 공통 ─────────────────────────────────────────── */
     /* 키캡(캔버스)이 모든 섹션에 떠 있어 dispersion 효과로 글로우 룩 자체 생성.
@@ -182,55 +199,62 @@
     .problem-grid {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 70px;                    /* Figma gap-[70px] (헤드라인 ↔ 카드) */
       width: 100%;
-      max-width: 1060px;   /* Figma 1440 디자인 기준 inner width (700 + 340 + 20 = 1060) */
-      margin: 0 auto;      /* 가운데 정렬 */
-    }
-    .problem-row {
-      display: flex;
-      gap: 20px;
+      max-width: 1100px;
+      margin: 0 auto;
     }
     .problem-headline {
-      width: 700px;
-      flex-shrink: 0;
-      height: 340px;
+      width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 40px;
+      gap: 20px;                    /* Figma gap-[20px] (title ↔ body) */
     }
     .problem-headline h2 {
       font-size: 48px;
       font-weight: 500;             /* Medium */
       line-height: 1.5;
       letter-spacing: -0.015em;
-      white-space: nowrap;
+      color: #14191e;               /* Figma --black */
       margin: 0;
     }
     .problem-headline-body {
       font-size: 17px;
       line-height: 1.7;
       letter-spacing: -0.01em;
+      color: #333;                  /* Figma gy-09 */
     }
     .problem-headline-body p {
       margin: 0;
     }
+    .problem-cards {
+      display: flex;
+      gap: 20px;                    /* Figma gap-[20px] */
+      width: 100%;
+    }
     .problem-card {
-      flex: 0 0 340px;              /* 모든 카드 고정 340px (1행, 2행 동일) */
+      flex: 1 0 0;                  /* 4 카드 균등 분배 */
       min-width: 0;
-      height: 340px;
-      background: rgba(255, 255, 255, 0.2);   /* v2 — 흰색 frost glass */
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      color: #000;
+      height: 250px;                /* Figma h-[250px] */
+      /* Figma Glass: Refraction 80 + Frost 4 + Light -45° 80% + Depth 20 */
+      background: rgba(248, 248, 248, 0.2);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow:
+        inset 0.5px 0.5px 1px rgba(255, 255, 255, 0.5),
+        inset -1px -1px 1px rgba(0, 0, 0, 0.04),
+        0 8px 32px rgba(20, 25, 30, 0.06);
+      color: #14191e;
       border-radius: 24px;
       padding: 24px;
       overflow: hidden;
-      font-size: 30px;
+      font-size: 24px;
       font-weight: 600;
       line-height: 1.5;
       letter-spacing: -0.01em;
     }
+    .problem-card p { margin: 0; }
 
     /* ── 03 Market Signal (v2 — 흰 배경, 키캡+MARKETING blur 그대로 비침) ── */
     .ax-section.signal {
@@ -256,12 +280,14 @@
       font-weight: 500;             /* Medium */
       line-height: 1.5;
       letter-spacing: -0.015em;
+      color: #14191e;               /* Figma --black */
       margin: 0;
     }
     .signal-body {
       font-size: 17px;
       line-height: 1.7;
       letter-spacing: -0.01em;
+      color: #333;                  /* Figma gy-09 */
     }
     .signal-body p {
       margin: 0;
@@ -276,8 +302,7 @@
       flex: 1 0 0;
       min-width: 0;
       padding: 24px 24px 24px 0;    /* 좌측 패딩 0 */
-      border-top: 1px solid #000;
-      color: #000;
+      border-top: 1px solid #14191e;   /* Figma --black */
       display: flex;
       flex-direction: column;
       gap: 20px;
@@ -288,13 +313,21 @@
       font-weight: 600;
       line-height: 1.7;
       letter-spacing: -0.01em;
+      color: #14191e;               /* Figma --black */
       margin: 0;
     }
     .signal-card p {
       font-size: 15px;
       line-height: 1.7;
       letter-spacing: -0.01em;
+      color: #333;                  /* Figma gy-09 */
       margin: 0;
+    }
+    .signal-card.emphasis { border-top-color: #14191e; }
+    .signal-card .highlight {
+      background: #aceaff;          /* Figma cyan cy-03 */
+      padding: 0 8px;
+      display: inline-block;
     }
     .signal-card.emphasis {
       border-top-width: 3px;
@@ -325,12 +358,14 @@
       font-weight: 500;             /* Medium */
       line-height: 1.5;
       letter-spacing: -0.015em;
+      color: #14191e;               /* Figma --black */
       margin: 0;
     }
     .solution-body {
       font-size: 17px;
       line-height: 1.7;
       letter-spacing: -0.01em;
+      color: #333;                  /* Figma gy-09 */
     }
     .solution-body p {
       margin: 0;
@@ -344,13 +379,19 @@
     }
     .solution-card {
       min-width: 0;
-      height: 250px;          /* Figma h-[250px] */
-      background: rgba(255, 255, 255, 0.2);   /* v2 — 흰색 frost glass */
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      height: 250px;
+      /* Figma Glass effect */
+      background: rgba(248, 248, 248, 0.2);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow:
+        inset 0.5px 0.5px 1px rgba(255, 255, 255, 0.5),
+        inset -1px -1px 1px rgba(0, 0, 0, 0.04),
+        0 8px 32px rgba(20, 25, 30, 0.06);
       color: #000;
       border-radius: 24px;
-      padding: 30px;          /* Figma p-[30px] */
+      padding: 30px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -378,16 +419,18 @@
       gap: 10px;              /* Figma gap-[10px] */
     }
     .solution-card h3 {
-      font-size: 20px;
+      font-size: 24px;              /* Figma P_Headline2/SB */
       font-weight: 600;
-      line-height: 1.7;       /* Figma Body1/SB */
+      line-height: 1.5;
       letter-spacing: -0.01em;
+      color: #14191e;               /* Figma --black */
       margin: 0;
     }
     .solution-card p {
       font-size: 15px;
       line-height: 1.7;
       letter-spacing: -0.01em;
+      color: #333;                  /* Figma gy-09 */
       margin: 0;
     }
 
@@ -399,69 +442,94 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      gap: 60px;                    /* 헤드라인 ↔ 카드 그리드 */
       position: relative;
       z-index: 2;
     }
-    .outcome-grid {
-      width: 100%;
-      max-width: 1060px;            /* 700 + 340 + 20 = 1060 (problem과 동일) */
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-    .outcome-row {
-      display: flex;
-      gap: 20px;
-      width: 100%;
-    }
     .outcome-headline {
-      width: 700px;
-      flex-shrink: 0;
-      height: 340px;
+      width: 100%;
+      max-width: 1100px;
       display: flex;
       flex-direction: column;
-      gap: 40px;
+      gap: 40px;                    /* top group ↔ body (Figma) */
+    }
+    .outcome-headline-top {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;                    /* pill ↔ title (Figma) */
+    }
+    .outcome-pill {
+      display: inline-flex;
+      align-self: flex-start;
+      align-items: center;
+      background: #aceaff;          /* Figma cy-03 */
+      padding: 0 8px;
+      font-size: 48px;              /* Figma H4_Title/SB */
+      font-weight: 600;
+      line-height: 1.5;
+      letter-spacing: -0.015em;
+      color: #14191e;
+      white-space: nowrap;
     }
     .outcome-headline h2 {
       font-size: 48px;
       font-weight: 500;             /* Medium */
       line-height: 1.5;
       letter-spacing: -0.015em;
-      white-space: nowrap;
+      color: #14191e;               /* Figma --black */
       margin: 0;
     }
     .outcome-headline-body {
       font-size: 17px;
       line-height: 1.7;
       letter-spacing: -0.01em;
+      color: #333;                  /* Figma gy-09 */
     }
     .outcome-headline-body p { margin: 0; }
+    .outcome-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;   /* 2×2 그리드 */
+      gap: 20px;
+      width: 100%;
+      max-width: 1100px;
+    }
     .outcome-card {
-      flex: 0 0 340px;                     /* 모든 카드 고정 340px (problem과 동일) */
       min-width: 0;
-      height: 340px;                       /* Figma h-[340px] */
-      background: rgba(255, 255, 255, 0.2);   /* v2 — 섹션 2와 동일 흰색 frost glass */
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      color: #000;
+      height: 200px;
+      /* Figma Glass effect */
+      background: rgba(248, 248, 248, 0.2);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow:
+        inset 0.5px 0.5px 1px rgba(255, 255, 255, 0.5),
+        inset -1px -1px 1px rgba(0, 0, 0, 0.04),
+        0 8px 32px rgba(20, 25, 30, 0.06);
       border-radius: 24px;
-      padding: 24px;                       /* Figma p-[24px] */
+      padding: 24px;
       display: flex;
-      flex-direction: column;
+      align-items: flex-start;
       justify-content: space-between;
+      gap: 20px;
       overflow: hidden;
     }
     .outcome-card h3 {
-      font-size: 30px;                     /* Figma P_Headline1/SB */
+      flex: 1 0 0;
+      min-width: 0;
+      font-size: 24px;              /* Figma P_Headline2/SB */
       font-weight: 600;
       line-height: 1.5;
-      letter-spacing: -0.01em;             /* Figma: -0.3 / 30 */
+      letter-spacing: -0.01em;
+      color: #14191e;               /* Figma --black */
       margin: 0;
     }
     .outcome-card p {
+      flex: 1 0 0;
+      min-width: 0;
       font-size: 15px;
       line-height: 1.7;
       letter-spacing: -0.01em;
+      color: #333;                  /* Figma gy-09 */
       margin: 0;
     }
 
@@ -489,6 +557,7 @@
       font-weight: 500;             /* Medium */
       line-height: 1.5;
       letter-spacing: -0.015em;
+      color: #14191e;               /* Figma --black */
       margin: 0;
     }
     .curriculum-meta {
@@ -496,7 +565,7 @@
       font-weight: 400;
       line-height: 1.7;
       letter-spacing: -0.01em;
-      color: #34393f;
+      color: #333;                  /* Figma gy-09 */
       margin: 0;
     }
     .curriculum-body {
@@ -523,9 +592,9 @@
       gap: 10px;
       padding: 20px;
       border: none;
-      border-top: 1px solid #333;   /* 가로선만 — 위쪽 1px (다음 탭의 윗선이 곧 이 탭의 아래선이 되어 두께 1px 유지) */
+      border-top: 1px solid #333;
       background: #f2f1f1;
-      color: #000;
+      color: #333;                  /* Figma gy-09 (비활성) */
       font-size: 16px;
       font-weight: 400;
       line-height: 1.7;
@@ -536,16 +605,16 @@
       font-family: inherit;
     }
     .tab-item.active {
-      background: #000;
-      color: #f2f1f1;
-      border-top-color: #000;
+      background: #14191e;          /* Figma --black */
+      color: #fff;
+      border-top-color: #14191e;
       font-weight: 600;
     }
     .tab-item.active + .tab-item {
-      border-top-color: #000;       /* active 바로 아래 탭의 윗선 = active의 아래선 → 검정으로 */
+      border-top-color: #14191e;
     }
     .tab-item.active:last-child {
-      border-bottom: 1px solid #000; /* active가 마지막 탭이면 아래선 별도로 추가 */
+      border-bottom: 1px solid #14191e;
     }
     .tab-week {
       width: 40px;
@@ -556,7 +625,7 @@
     .tab-detail {
       flex: 1 0 0;
       min-width: 0;
-      border-top: 1px solid #000;
+      border-top: 1px solid #14191e;   /* Figma --black */
       padding: 20px 70px 50px;
       display: flex;
       flex-direction: column;
@@ -567,6 +636,7 @@
       font-weight: 600;
       line-height: 1.5;
       letter-spacing: -0.01em;
+      color: #14191e;               /* Figma --black */
       margin: 0;
     }
     .detail-row {
@@ -575,6 +645,7 @@
       font-size: 17px;
       line-height: 1.7;
       letter-spacing: -0.01em;
+      color: #333;                  /* Figma gy-09 */
     }
     .detail-label {
       font-weight: 600;
@@ -599,11 +670,11 @@
     .curriculum-disclaimer {
       width: 100%;
       max-width: 1100px;
-      font-size: 17px;              /* Figma Body2/R */
+      font-size: 15px;              /* Figma Label1/R */
       font-weight: 400;
       line-height: 1.7;
       letter-spacing: -0.01em;
-      color: #34393f;               /* Figma frtr-gray-01 */
+      color: #767676;               /* Figma gy-07 */
       margin: 0;
     }
 
@@ -631,12 +702,14 @@
       font-weight: 500;             /* Medium */
       line-height: 1.5;
       letter-spacing: -0.015em;
+      color: #14191e;               /* Figma --black */
       margin: 0;
     }
     .tools-desc {
       font-size: 17px;
       line-height: 1.7;
       letter-spacing: -0.01em;
+      color: #333;                  /* Figma gy-09 */
     }
     .tools-desc p { margin: 0; }
     .tools-group {
@@ -651,6 +724,7 @@
       font-weight: 600;
       line-height: 1.5;
       letter-spacing: -0.01em;
+      color: #14191e;               /* Figma --black */
       margin: 0;
     }
     .tools-grid {
@@ -668,7 +742,9 @@
       display: flex;
       flex-direction: column;
       gap: 20px;
-      padding: 24px 48px 24px 0;    /* Figma: pr-[48px] py-[24px], no left padding */
+      padding: 24px;                /* Figma p-[24px] */
+      background: #fff;             /* Figma white card */
+      border-radius: 24px;          /* Figma rounded-[24px] */
     }
     .tool-card-head {
       display: flex;
@@ -678,7 +754,7 @@
     .tool-icon {
       width: 60px;
       height: 60px;
-      border-radius: 18px;
+      border-radius: 12px;          /* Figma rounded-[12px] */
       object-fit: cover;
       flex-shrink: 0;
     }
@@ -692,11 +768,11 @@
       white-space: nowrap;
     }
     .tool-badge.paid {
-      background: #000;             /* Figma frtr-black */
-      color: #fff;                  /* Figma frtr-white */
+      background: #14191e;          /* Figma --black */
+      color: #f8f8f8;               /* Figma gy-01 */
     }
     .tool-badge.free {
-      background: #fff;             /* Figma frtr-white */
+      background: #f8f8f8;          /* Figma gy-01 */
       color: #333;                  /* Figma gy-09 */
     }
     .tool-body {
@@ -706,9 +782,10 @@
     }
     .tool-name {
       font-size: 24px;
-      font-weight: 700;
+      font-weight: 600;             /* Figma SemiBold (was Bold 700) */
       line-height: 1.5;
       letter-spacing: -0.01em;
+      color: #14191e;               /* Figma --black */
       margin: 0;
     }
     .tool-card ul {
@@ -720,6 +797,7 @@
       font-size: 15px;
       line-height: 1.7;
       letter-spacing: -0.01em;
+      color: #333;                  /* Figma gy-09 */
     }
 
     /* ── 08 Reference ──────────────────────────────────────────── */
@@ -746,12 +824,14 @@
       font-weight: 500;             /* Medium */
       line-height: 1.5;
       letter-spacing: -0.015em;
+      color: #14191e;               /* Figma --black */
       margin: 0;
     }
     .reference-desc {
       font-size: 17px;
       line-height: 1.7;
       letter-spacing: -0.01em;
+      color: #333;                  /* Figma gy-09 */
     }
     .reference-desc p { margin: 0; }
     .reference-block {
@@ -769,41 +849,44 @@
     .testimonial-card {
       flex: 1 0 0;                  /* 가로 영역 균등 분배 (4개 카드 + 20px 갭) */
       min-width: 0;
-      background: #f2f1f1;          /* Figma gy-01 */
+      background: #14191e;          /* Figma --black (다크 카드) */
+      color: #fff;
       border-radius: 24px;
       padding: 30px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       gap: 30px;
-      min-height: 331px;            /* Figma h-[331px] */
+      min-height: 300px;            /* Figma h-[300px] */
     }
     .testimonial-card p {
-      font-size: 17px;
-      font-weight: 500;
+      font-size: 15px;              /* Figma 15px */
+      font-weight: 400;
       line-height: 1.7;
       letter-spacing: -0.01em;
+      color: #fff;
       margin: 0;
     }
     .testimonial-card p strong {
-      font-weight: 700;
+      font-weight: 600;             /* Figma SemiBold */
     }
     .testimonial-author {
       display: flex;
       gap: 10px;
       align-items: center;
-      font-size: 14px;
+      font-size: 15px;              /* Figma 15px */
       line-height: 1.7;
       letter-spacing: -0.01em;
+      color: #ccc;                  /* Figma gy-03 */
     }
     .testimonial-name {
       font-weight: 600;
     }
     .reference-disclaimer {
-      font-size: 16px;
+      font-size: 15px;              /* Figma Label1/R */
       line-height: 1.7;
       letter-spacing: -0.01em;
-      color: #808080;
+      color: #767676;               /* Figma gy-07 */
       margin: 0;
     }
 
@@ -826,12 +909,14 @@
       font-weight: 600;
       line-height: 1.5;
       letter-spacing: -0.01em;
+      color: #14191e;               /* Figma --black */
       margin: 0;
     }
     .satisfaction-desc {
       font-size: 17px;
       line-height: 1.7;
       letter-spacing: -0.01em;
+      color: #333;                  /* Figma gy-09 */
     }
     .satisfaction-desc p { margin: 0; }
     .satisfaction-cards {
@@ -839,38 +924,44 @@
       gap: 20px;
       width: 100%;
     }
-    .score-card {
+    /* score-card-group: 라벨(밖) + 카드(border 박스) 구조 */
+    .score-card-group {
       flex: 1 0 0;
       min-width: 0;
-      background: #f2f1f1;          /* Figma gy-01 */
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .score-label {
+      font-size: 15px;              /* Figma Label1/SB */
+      font-weight: 600;
+      line-height: 1.7;
+      letter-spacing: -0.01em;
+      color: #14191e;               /* Figma --black */
+      margin: 0;
+    }
+    .score-card {
+      background: transparent;
+      border: 1px solid #ececec;    /* Figma gy-02 */
       border-radius: 24px;
       padding: 40px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
-    }
-    .score-badge {
-      background: #000;
-      color: #fff;
-      font-size: 14px;
-      font-weight: 600;
-      line-height: 1.7;
-      letter-spacing: -0.01em;
-      padding: 4px 8px;
-      border-radius: 8px;
-      white-space: nowrap;
     }
     .score-value {
       display: flex;
       align-items: baseline;
+      justify-content: center;
       gap: 10px;
+      width: 266.666px;
     }
     .score-num {
       font-size: 64px;
       font-weight: 500;
       line-height: 1.4;
       letter-spacing: -0.015em;
+      color: #14191e;               /* Figma --black */
       margin: 0;
     }
     .score-unit {
@@ -878,7 +969,7 @@
       font-weight: 500;
       line-height: 1.35;
       letter-spacing: -0.01em;
-      color: #adb3ba;
+      color: #ccc;                  /* Figma gy-03 */
       margin: 0;
     }
 
@@ -899,7 +990,7 @@
       font-weight: 500;             /* Medium */
       line-height: 1.5;
       letter-spacing: -0.015em;
-      color: #1a1a1a;
+      color: #333;                  /* Figma gy-09 */
       margin: 0;
       width: 100%;
       max-width: 1100px;
@@ -908,6 +999,7 @@
       font-size: 17px;
       line-height: 1.7;
       letter-spacing: -0.01em;
+      color: #333;                  /* Figma gy-09 */
       width: 100%;
       max-width: 1100px;
     }
@@ -926,12 +1018,13 @@
     .benefit-card {
       flex: 1 0 0;
       min-width: 0;
-      background: #f2f1f1;          /* Figma 카드 배경 */
+      background: transparent;
+      border: 1px solid #ececec;    /* Figma gy-02 */
       border-radius: 24px;
       padding: 40px;
       height: 250px;
       display: flex;
-      align-items: stretch;
+      align-items: center;          /* Figma justify-center (vertical) */
       gap: 20px;
     }
     .benefit-left {
@@ -942,18 +1035,25 @@
       width: 220px;
     }
     .benefit-label {
-      font-size: 17px;
+      display: inline-flex;
+      align-self: flex-start;
+      align-items: center;
+      background: #aceaff;          /* Figma cy-03 cyan pill */
+      padding: 0 8px;
+      font-size: 15px;
       font-weight: 600;
       line-height: 1.7;
       letter-spacing: -0.01em;
-      color: #939393;               /* Figma gy-05 */
+      color: #14191e;               /* Figma --black */
       margin: 0;
+      white-space: nowrap;
     }
     .benefit-name {
       font-size: 24px;
       font-weight: 600;
       line-height: 1.5;
       letter-spacing: -0.01em;
+      color: #14191e;               /* Figma --black */
       margin: 0;
     }
     .benefit-desc {
@@ -962,89 +1062,129 @@
       font-size: 15px;
       line-height: 1.7;
       letter-spacing: -0.01em;
+      color: #333;                  /* Figma gy-09 */
       margin: 0;
     }
 
-    /* ── 10 Schedule (v2 — 흰 배경, 키캡+MARKETING blur 그대로 비침) ── */
+    /* ── 10 Schedule (v2 — 2열 레이아웃: 좌 헤더 / 우 5 step) ──────── */
     .ax-section.schedule {
       background: transparent;
       color: #000;
-      padding: 160px 190px;         /* 하단 패딩 160 — schedule 카드 아래 여백 */
+      padding: 160px 190px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 40px;
       position: relative;
       z-index: 2;
     }
+    .schedule-layout {
+      display: flex;
+      gap: 40px;                    /* Figma gap-[40px] */
+      width: 100%;
+      max-width: 1100px;
+      align-items: flex-start;
+    }
     .schedule-head {
+      flex: 1 0 0;
+      min-width: 0;
       display: flex;
       flex-direction: column;
       gap: 20px;
-      width: 100%;
-      max-width: 1100px;
     }
     .schedule-title {
       font-size: 48px;
       font-weight: 500;             /* Medium */
       line-height: 1.5;
       letter-spacing: -0.015em;
-      color: #1a1a1a;
+      color: #333;                  /* Figma gy-09 */
       margin: 0;
     }
     .schedule-desc {
       font-size: 17px;
       line-height: 1.7;
       letter-spacing: -0.01em;
+      color: #333;                  /* Figma gy-09 */
       margin: 0;
     }
     .schedule-steps {
-      display: flex;
-      align-items: stretch;
-      gap: 24px;                    /* Figma gap-[24px] */
-      width: 100%;
-      max-width: 1100px;
-    }
-    .step-card {
       flex: 1 0 0;
       min-width: 0;
-      padding: 24px;
-      border-radius: 24px;          /* Figma rounded-[24px] */
-      background: rgba(255, 255, 255, 0.2);   /* 섹션 2와 동일한 흰색 frost glass */
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 20px;                    /* Figma gap-[20px] */
+    }
+    .step-card {
+      border: none;
+      border-top: 1px solid #000;   /* Figma border-t */
+      padding: 24px;
+      background: transparent;
+      display: flex;
+      gap: 20px;                    /* 좌 step-head ↔ 우 step-body */
+      align-items: flex-start;
     }
     .step-head {
+      flex: 1 0 0;
+      min-width: 0;
       display: flex;
-      flex-direction: column;
-      gap: 10px;
+      flex-direction: row;
+      gap: 15px;                    /* Figma gap-[15px] */
+      align-items: flex-start;
     }
     .step-num {
-      font-size: 17px;
+      flex-shrink: 0;
+      font-size: 17px;              /* Figma Body2/SB */
       font-weight: 600;
       line-height: 1.7;
       letter-spacing: -0.01em;
+      color: #14191e;               /* Figma --black */
       margin: 0;
     }
     .step-name {
-      font-size: 24px;
+      font-size: 24px;              /* Figma P_Headline2/SB */
       font-weight: 600;
       line-height: 1.5;
       letter-spacing: -0.01em;
+      color: #14191e;               /* Figma --black */
       margin: 0;
     }
     .step-body {
+      flex: 1 0 0;
+      min-width: 0;
       display: flex;
       flex-direction: column;
       gap: 10px;
       font-size: 15px;
       line-height: 1.7;
       letter-spacing: -0.01em;
+      color: #333;                  /* Figma gy-09 */
     }
-    .step-body p { margin: 0; }
+    /* "※ ..." 부속 노트 — sub-note 컬러 */
+    .step-meta-content p:last-child:not(:first-child),
+    .step-body .sub-note {
+      color: #767676;               /* Figma gy-07 */
+    }
+    .step-body > p { margin: 0; }
+    .step-text-block { display: flex; flex-direction: column; }
+    .step-text-block p { margin: 0; }
+    .step-meta {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      width: 100%;
+    }
+    .step-meta-label {
+      width: 26px;                  /* Figma w-[26px] */
+      flex-shrink: 0;
+      font-weight: 600;             /* Label1/SB */
+      margin: 0;
+    }
+    .step-meta-content {
+      flex: 1 0 0;
+      min-width: 0;
+      margin: 0;
+    }
+    .step-meta-content p { margin: 0; }
+    .step-meta-group { display: flex; flex-direction: column; width: 100%; }
 
     /* ── 11 Price (v2 — 흰 배경, 키캡+MARKETING blur 그대로 비침) ── */
     .ax-section.price {
@@ -1070,23 +1210,29 @@
       font-weight: 500;             /* Medium */
       line-height: 1.5;
       letter-spacing: -0.015em;
-      color: #000;
+      color: #14191e;               /* Figma --black */
       margin: 0;
     }
     .price-desc {
       font-size: 17px;
       line-height: 1.7;
       letter-spacing: -0.01em;
-      color: #000;
+      color: #333;                  /* Figma gy-09 */
       margin: 0;
     }
     .price-box {
       width: 100%;
       max-width: 1100px;
-      background: rgba(255, 255, 255, 0.2);   /* 섹션 2와 동일한 흰색 frost glass */
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      color: #000;
+      /* Figma Glass effect */
+      background: rgba(248, 248, 248, 0.2);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow:
+        inset 0.5px 0.5px 1px rgba(255, 255, 255, 0.5),
+        inset -1px -1px 1px rgba(0, 0, 0, 0.04),
+        0 8px 32px rgba(20, 25, 30, 0.06);
+      color: #14191e;
       border-radius: 24px;
       padding: 48px;
       display: flex;
@@ -1104,7 +1250,7 @@
       font-weight: 600;
       line-height: 1.7;
       letter-spacing: -0.01em;
-      color: #000;
+      color: #14191e;               /* Figma --black */
       margin: 0;
     }
     .price-value {
@@ -1112,17 +1258,17 @@
       font-weight: 700;
       line-height: 1.4;
       letter-spacing: -0.015em;
-      color: #000;
+      color: #14191e;               /* Figma --black */
       margin: 0;
     }
     .price-tags {
       display: flex;
-      gap: 12px;
+      gap: 8px;
       flex-wrap: wrap;
     }
     .price-tag {
-      background: #34393f;          /* Figma frtr-gray-01 */
-      color: #adb3ba;               /* Figma frtr-gray-03 */
+      background: #f8f8f8;          /* Figma gy-01 (라이트) */
+      color: #767676;               /* Figma gy-07 */
       font-size: 14px;
       font-weight: 600;
       line-height: 1.7;
@@ -1135,7 +1281,7 @@
       margin: 0;
       padding-left: 22px;
       list-style: disc;
-      color: #808080;
+      color: #333;                  /* Figma gy-09 */
     }
     .price-notes li {
       font-size: 15px;
@@ -1147,7 +1293,7 @@
     .ax-section.instructors {
       background: transparent;
       color: #000;
-      padding: 160px 190px;
+      padding: 160px 190px 0;       /* 다음 섹션(schedule)과 160px 간격 */
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -1158,13 +1304,18 @@
     .instructor-row {
       display: flex;
       gap: 20px;
-      align-items: stretch;
+      align-items: flex-start;             /* Figma items-start */
       width: 100%;
       max-width: 1100px;
+      justify-content: center;
+    }
+    /* 멘토 카드 row(intro 없음) — 가장 긴 카드 높이에 맞춰 모두 stretch */
+    .instructor-row:not(:has(.instructor-intro)) {
+      align-items: stretch;
     }
     .instructor-intro {
-      flex: 1 0 0;
-      min-width: 0;
+      width: 700px;                        /* Figma w-[700px] */
+      flex-shrink: 0;
       display: flex;
       flex-direction: column;
       gap: 20px;
@@ -1175,65 +1326,82 @@
       font-weight: 500;             /* Medium */
       line-height: 1.5;
       letter-spacing: -0.015em;
-      color: #000;
+      color: #14191e;               /* Figma --black */
       margin: 0;
     }
     .instructor-desc {
       font-size: 17px;
       line-height: 1.7;
       letter-spacing: -0.01em;
-      color: #000;
+      color: #333;                  /* Figma gy-09 */
     }
     .instructor-desc p { margin: 0; }
     .instructor-card {
-      width: 340px;
+      width: 340px;                       /* Figma w-[340px] */
       flex-shrink: 0;
       display: flex;
       flex-direction: column;
+      align-items: center;                /* Figma items-center */
       border-radius: 24px;
       overflow: hidden;
     }
     .instructor-img {
-      height: 240px;
+      width: 340px;
+      height: 240px;                      /* Figma h-[240px] */
       position: relative;
-      background: #f2f1f1;
+      background: #f8f8f8;                /* 멘토: gy-01 */
+      border-top-left-radius: 24px;
+      border-top-right-radius: 24px;
       overflow: hidden;
     }
     .instructor-img > img {
       position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;                /* 자연 비율 유지 — 잘림 없이 전체 실루엣 표시 */
+      object-position: right top;         /* 우측 상단 anchor (좌측 상단 라벨과 겹치지 않음) */
     }
     .instructor-label {
       position: absolute;
       top: 20px;
       left: 30px;
+      width: 107px;                       /* Figma w-[107px] */
       display: flex;
       flex-direction: column;
       gap: 6px;
       z-index: 1;
     }
     .instructor-label .role {
-      font-size: 17px;
+      font-size: 17px;                    /* Figma Body2/SB */
       font-weight: 600;
       line-height: 1.7;
       letter-spacing: -0.01em;
-      color: #ccc;
+      color: #767676;                     /* Figma gy-07 */
       margin: 0;
     }
     .instructor-label .name {
-      font-size: 24px;
+      font-size: 24px;                    /* Figma P_Headline2/B */
       font-weight: 700;
       line-height: 1.5;
       letter-spacing: -0.01em;
-      color: #000;
+      color: #14191e;                     /* Figma --black */
       margin: 0;
     }
     .instructor-info {
-      background: rgba(255, 255, 255, 0.2);   /* 섹션 2와 동일한 흰색 frost glass */
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      width: 340px;
+      /* Figma Glass effect — instructor card 하단 정보 영역 */
+      background: rgba(248, 248, 248, 0.2);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-top: none;                   /* 위는 이미지와 연결되므로 border 제거 */
+      box-shadow:
+        inset 0.5px 0 1px rgba(255, 255, 255, 0.5),
+        inset -1px -1px 1px rgba(0, 0, 0, 0.04),
+        0 8px 32px rgba(20, 25, 30, 0.06);
+      border-bottom-left-radius: 24px;
+      border-bottom-right-radius: 24px;
       padding: 20px 30px 35px;
       display: flex;
       flex-direction: column;
@@ -1241,28 +1409,28 @@
       flex: 1 0 auto;
     }
     .instructor-position {
-      font-size: 17px;
+      font-size: 15px;                    /* Figma Label1/SB */
       font-weight: 600;
       line-height: 1.7;
       letter-spacing: -0.01em;
-      color: #000;
+      color: #14191e;                     /* Figma --black */
       margin: 0;
     }
     .instructor-bio {
-      font-size: 17px;
+      font-size: 15px;                    /* Figma Label1/R */
       font-weight: 400;
       line-height: 1.7;
       letter-spacing: -0.01em;
-      color: #000;
+      color: #333;                        /* Figma gy-09 */
       margin: 0;
     }
     .instructor-disclaimer {
       width: 100%;
       max-width: 1100px;
-      font-size: 16px;
+      font-size: 15px;                    /* Figma Label1/R */
       line-height: 1.7;
       letter-spacing: -0.01em;
-      color: #808080;
+      color: #767676;                     /* Figma gy-07 */
       margin: 0;
       position: relative;
       z-index: 2;
@@ -1270,7 +1438,7 @@
 
     /* ── 13 FAQ + Notice ──────────────────────────────────────── */
     .ax-section.faq {
-      background: #000;             /* Figma frtr-black */
+      background: #14191e;          /* Figma --black */
       color: #fff;
       padding: 160px 190px;
       display: flex;
@@ -1283,13 +1451,13 @@
     .faq-group {
       display: flex;
       flex-direction: column;
-      gap: 30px;
+      gap: 20px;                    /* Figma gap-[20px] */
       width: 100%;
       max-width: 1100px;
     }
     .faq-section-title {
-      font-size: 30px;
-      font-weight: 700;
+      font-size: 24px;              /* Figma P_Headline2/SB */
+      font-weight: 600;
       line-height: 1.5;
       letter-spacing: -0.01em;
       color: #fff;
@@ -1301,8 +1469,8 @@
       gap: 5px;
     }
     .faq-q {
-      font-size: 17px;
-      font-weight: 500;
+      font-size: 15px;              /* Figma Label1/SB */
+      font-weight: 600;
       line-height: 1.7;
       letter-spacing: -0.01em;
       color: #fff;
@@ -1310,12 +1478,12 @@
     }
     .faq-a {
       margin: 0;
-      padding-left: 25px;
+      padding-left: 22px;
       list-style: disc;
-      color: #f2f1f1;               /* Figma 답변 컬러 */
+      color: #ccc;                  /* Figma gy-03 */
     }
     .faq-a li {
-      font-size: 17px;
+      font-size: 15px;              /* Figma Label1/R */
       line-height: 1.7;
       letter-spacing: -0.01em;
     }
@@ -1323,7 +1491,7 @@
     .notice-group {
       display: flex;
       flex-direction: column;
-      gap: 30px;
+      gap: 20px;                    /* Figma gap-[20px] */
       width: 100%;
       max-width: 1100px;
     }
@@ -1333,7 +1501,7 @@
       gap: 10px;
     }
     .notice-block-title {
-      font-size: 20px;
+      font-size: 15px;              /* Figma Label1/SB */
       font-weight: 600;
       line-height: 1.7;
       letter-spacing: -0.01em;
@@ -1342,18 +1510,18 @@
     }
     .notice-block ul {
       margin: 0;
-      padding-left: 25px;
+      padding-left: 22px;
       list-style: disc;
-      color: #f2f1f1;               /* Figma 리스트 컬러 */
+      color: #ccc;                  /* Figma gy-03 */
     }
     .notice-block ul li {
-      font-size: 17px;
+      font-size: 15px;              /* Figma Label1/R */
       line-height: 1.7;
       letter-spacing: -0.01em;
     }
     .notice-contact {
-      font-size: 17px;
-      font-weight: 500;
+      font-size: 15px;              /* Figma Label1/R */
+      font-weight: 400;
       line-height: 1.7;
       letter-spacing: -0.01em;
       color: #fff;
@@ -1365,19 +1533,21 @@
     @media (max-width: 768px) {
       .ax-section.intro,
       html.is-embedded .ax-section.intro { height: 625px; min-height: 625px; }
-      .ax-header { top: 32px; width: calc(100% - 64px); }
-      .ax-title  { font-size: 40px; white-space: normal; }
-      .mobile-br { display: inline; }   /* 모바일에서만 강제 줄바꿈 */
-      .ax-footer { bottom: 32px; width: calc(100% - 64px);
-                   grid-template-columns: 1fr; gap: 20px; font-size: 14px; }
+      .ax-header { top: 32px; width: calc(100% - 64px); gap: 16px; }
+      .ax-eyebrow { font-size: 14px; }
+      .ax-headline-group { gap: 8px; }
+      .ax-title { font-size: 32px; line-height: 1.4; }
+      .ax-subtitle { font-size: 16px; }
+      .mobile-br { display: inline; }
+      .ax-footer { bottom: 32px; width: calc(100% - 64px); font-size: 13px; }
       .ax-section.problem { padding: 80px 32px; }
-      /* 모바일: headline + 4 카드 2×2 그리드 (15px gap) */
-      .problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-      .problem-row { display: contents; }            /* 행 wrapper 무시 → 모든 카드 grid 직접 자식 */
-      .problem-headline { grid-column: 1 / -1; width: 100%; height: auto; gap: 24px; }
+      /* 모바일: 헤드라인 위 / 카드 4개 2×2 그리드 (15px gap) */
+      .problem-grid { gap: 30px; }
+      .problem-headline { gap: 24px; }
       .problem-headline h2 { font-size: 28px; white-space: normal; }
+      .problem-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
       .problem-card {
-        flex: none; width: auto; height: auto;
+        flex: none; min-width: 0; height: auto;
         min-height: 180px; font-size: 18px; padding: 20px;
       }
       .ax-section.signal { padding: 80px 32px; gap: 40px; }
@@ -1397,21 +1567,18 @@
       .solution-card-icon { width: 40px; height: 40px; }
       .solution-card h3 { font-size: 16px; }
       .solution-card p { font-size: 13px; }
-      .ax-section.outcome { padding: 80px 32px; }
-      /* 모바일: headline + 4 카드 2×2 그리드 (problem과 동일 패턴) */
-      .outcome-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-      .outcome-row { display: contents; }
-      .outcome-headline { grid-column: 1 / -1; width: 100%; height: auto; gap: 24px; }
+      .ax-section.outcome { padding: 80px 32px; gap: 30px; }
+      .outcome-headline { gap: 24px; }
       .outcome-headline h2 { font-size: 28px; white-space: normal; }
+      .outcome-pill { font-size: 28px; }
       .outcome-headline-body { font-size: 15px; }
-      .outcome-card {
-        flex: none; width: auto; height: auto;
-        min-height: 200px; padding: 20px;
-      }
-      .outcome-card h3 { font-size: 18px; }
-      .outcome-card p { font-size: 13px; }
+      .outcome-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+      /* 모바일 좁은 카드: 가로 분할 → 세로 stack */
+      .outcome-card { min-width: 0; height: auto; min-height: 200px; padding: 20px; flex-direction: column; gap: 12px; }
+      .outcome-card h3 { flex: none; font-size: 18px; }
+      .outcome-card p { flex: none; font-size: 13px; }
       /* 모바일 커리큘럼 — Figma 기준 아코디언 레이아웃 */
-      .ax-section.curriculum { padding: 70px 32px; gap: 30px; }
+      .ax-section.curriculum { padding: 70px 32px 0; gap: 30px; }
       .curriculum-head { gap: 5px; }
       .curriculum-title { font-size: 32px; line-height: 1.4; }
       .curriculum-meta { font-size: 16px; }
@@ -1466,7 +1633,7 @@
       .detail-row .detail-label + ul li,
       .detail-row .detail-label + p { font-size: 15px; }
       .detail-row ul { padding-left: 22px; margin-left: 0; }
-      .ax-section.tools { padding: 80px 32px; gap: 40px; }
+      .ax-section.tools { padding: 160px 32px 80px; gap: 40px; }
       /* 모바일 폰트 위계 — Figma mo_09 기준 */
       .tools-title { font-size: 32px; }              /* H4_Title/M */
       .tools-desc { font-size: 16px; }               /* Body1/R */
@@ -1474,7 +1641,7 @@
       /* 모바일: 모든 카드 2열 그리드, 카드 간격 15px */
       .tools-grid { gap: 15px; }
       .tools-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-      .tool-card { flex: none; width: auto; min-width: 0; padding: 16px 8px 16px 0; }
+      .tool-card { flex: none; width: auto; min-width: 0; padding: 20px; }
       .tool-name { font-size: 16px; }                /* Body1/B */
       .tool-card ul li { font-size: 13px; }          /* Label2/R */
       .tool-badge { font-size: 13px; }               /* Label2/SB */
@@ -1500,12 +1667,22 @@
       .benefit-card { flex-direction: column; padding: 28px; height: auto; gap: 16px; }
       .benefit-left { width: 100%; }
       .benefit-name { font-size: 20px; }
-      .ax-section.schedule { padding: 80px 32px; gap: 32px; }
+      /* 모바일: 헤더 / step 리스트 세로 stack, step row 내부도 세로 stack */
+      .ax-section.schedule { padding: 80px 32px; }
+      .schedule-layout { flex-direction: column; gap: 30px; }
+      .schedule-head { gap: 16px; }
       .schedule-title { font-size: 28px; }
       .schedule-desc { font-size: 15px; }
-      .schedule-steps { flex-direction: column; gap: 0; }
-      .step-card { flex: 1 0 auto; padding: 20px 0; border-top-width: 2px; }
+      .schedule-steps { gap: 0; }
+      .step-card {
+        flex-direction: column;
+        gap: 12px;
+        padding: 20px 0;
+      }
+      .step-head { gap: 12px; }
       .step-name { font-size: 20px; }
+      .step-body { font-size: 14px; }
+      .step-meta-label { width: 32px; }
       .ax-section.price { padding: 80px 32px; gap: 32px; }
       .price-title { font-size: 28px; }
       .price-desc { font-size: 15px; }
@@ -1514,26 +1691,26 @@
       .price-tags { gap: 8px; }
       .price-tag { font-size: 12px; }
       .price-notes li { font-size: 13px; }
-      /* 모바일: 인트로 + 4 카드 2×2 그리드 (problem과 동일 패턴) */
+      /* 모바일: 인트로 + 4 카드 1열 stack */
       .ax-section.instructors {
         padding: 80px 32px;
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 15px;
+        grid-template-columns: 1fr;       /* 1열 */
+        gap: 20px;
         align-items: stretch;
       }
       .instructor-title { font-size: 28px; }
       .instructor-desc { font-size: 15px; }
       .instructor-row { display: contents; }
-      .instructor-intro { grid-column: 1 / -1; gap: 16px; padding-bottom: 17px; }
-      .instructor-card { flex: none; width: auto; }
-      .instructor-img { height: 160px; }
-      .instructor-label { top: 14px; left: 16px; }
-      .instructor-label .role { font-size: 14px; }
-      .instructor-label .name { font-size: 18px; }
-      .instructor-info { padding: 16px 16px 20px; gap: 12px; }
-      .instructor-position, .instructor-bio { font-size: 13px; }
-      .instructor-disclaimer { grid-column: 1 / -1; font-size: 13px; }
+      .instructor-intro { width: 100%; gap: 16px; padding-bottom: 17px; }
+      .instructor-card { flex: none; width: 100%; max-width: 100%; }
+      .instructor-img { width: 100%; height: 240px; }
+      .instructor-label { top: 20px; left: 30px; }
+      .instructor-label .role { font-size: 17px; }
+      .instructor-label .name { font-size: 24px; }
+      .instructor-info { width: 100%; padding: 20px 30px 35px; gap: 20px; }
+      .instructor-position, .instructor-bio { font-size: 15px; }
+      .instructor-disclaimer { font-size: 15px; }
       .ax-section.faq { padding: 80px 32px; gap: 40px; }
       .faq-section-title { font-size: 22px; }
       .faq-q { font-size: 15px; }
@@ -1546,58 +1723,41 @@
 
   <section class="ax-section intro">
     <header class="ax-header">
-      <h1 class="ax-title">콘텐츠 제작부터<br class="mobile-br"> 운영 자동화까지</h1>
+      <p class="ax-eyebrow">커리어 성장을 위한 4주 AX 챌린지</p>
+      <h1 class="ax-title">AI를 쓰는 마케터에서,<br>AI로 일하는 마케터로 성장하세요.</h1>
     </header>
 
     <div class="ax-intro-hint" id="introHint">Press the keycap</div>
 
     <footer class="ax-footer">
-      <div class="ax-footer-left">
-        <p class="ax-eyebrow">커리어 성장을 위한 4주 AX 챌린지</p>
-        <p class="ax-meta">6월 2일 개강 · 선착순 50명</p>
-      </div>
-      <div class="ax-footer-right">
-        <p>AI를 쓰는 마케터에서, AI로 일하는 마케터로 성장하세요.<br>반복 업무는 줄이고 성과는 키웁니다.</p>
-      </div>
+      <p class="ax-subtitle">6월 2일 개강 · 선착순 50명</p>
+      <p>콘텐츠 제작부터 운영 자동화까지<br>반복 업무는 줄이고 성과는 키웁니다</p>
     </footer>
   </section>
 
   <section class="ax-section problem">
     <div class="problem-grid">
-      <div class="problem-row">
-        <div class="problem-headline">
-          <h2>AI, 이렇게 쓰고 계시지 않나요?</h2>
-          <div class="problem-headline-body">
-            <p>문제는 AI가 아니라, 일하는 방식입니다.</p>
-            <p>마케터의 성장은 일하는 방식에서 시작됩니다.</p>
-            <p>AI를 실무에 제대로 적용하고 싶은 마케터를 위한 4주 챌린지, 지금 탑승하세요.</p>
-          </div>
-        </div>
-        <div class="problem-card">
-          <p>다른 마케터는 AI로</p>
-          <p>성과를 내고 있다는데,</p>
-          <p>나만 제자리인 것 같다.</p>
+      <div class="problem-headline">
+        <h2>AI, 이렇게 쓰고 계시지 않나요?</h2>
+        <div class="problem-headline-body">
+          <p>문제는 AI가 아니라, 일하는 방식입니다. 마케터의 성장은 일하는 방식에서 시작됩니다.</p>
+          <p>AI를 실무에 제대로 적용하고 싶은 마케터를 위한 4주 챌린지, 지금 탑승하세요.</p>
         </div>
       </div>
-      <div class="problem-row">
-        <div class="problem-card">
-          <p>ChatGPT로</p>
-          <p>카피 초안은 뽑는데,</p>
-          <p>결국 처음부터</p>
-          <p>다시 쓴다.</p>
-        </div>
-        <div class="problem-card">
+      <div class="problem-cards">
+        <article class="problem-card">
+          <p>ChatGPT로 카피 초안은 뽑는데, 결국 처음부터 다시 쓴다.</p>
+        </article>
+        <article class="problem-card">
           <p>AI 툴은 이것저것</p>
-          <p>써봤는데,</p>
-          <p>실무에 정착된 건</p>
-          <p>하나도 없다.</p>
-        </div>
-        <div class="problem-card">
-          <p>콘텐츠 만들고,</p>
-          <p>광고 세팅하고,</p>
-          <p>보고서 쓰느라</p>
-          <p>하루가 다 끝난다.</p>
-        </div>
+          <p>써봤는데, 실무에 정착된 건 하나도 없다.</p>
+        </article>
+        <article class="problem-card">
+          <p>콘텐츠 만들고, 광고 세팅하고, 보고서 쓰느라 하루가 다 끝난다.</p>
+        </article>
+        <article class="problem-card emphasis">
+          <p>다른 마케터는 AI로 성과를 내고 있다는데, 나만 제자리인 것 같다.</p>
+        </article>
       </div>
     </div>
   </section>
@@ -1626,7 +1786,7 @@
         <p>McKinsey는 AI가 마케팅 생산성을 마케팅 지출의 15% 수준까지 높일 수 있다고 분석했습니다.</p>
       </article>
       <article class="signal-card emphasis">
-        <h3>하지만 ‘도구’로 쓰는 수준에 머무는 경우가 대다수</h3>
+        <h3><span class="highlight">하지만</span> ‘도구’로 쓰는 수준에<br>머무는 경우가 대다수</h3>
         <p>76%의 조직이 AI로 속도 개선을 경험했지만, 데이터 품질이 충분하다고 답한 조직은 44%에 그쳤습니다.</p>
       </article>
     </div>
@@ -1683,34 +1843,33 @@
   </section>
 
   <section class="ax-section outcome">
-    <div class="outcome-grid">
-      <div class="outcome-row">
-        <div class="outcome-headline">
-          <h2>4주 후,<br>AI를 써보는 마케터가 아니라<br>AI로 일하는 마케터가 됩니다.</h2>
-          <div class="outcome-headline-body">
-            <p>반복 업무에 쫓기던 일상에서 벗어나, 콘텐츠를 만들고 확장하고 운영하는</p>
-            <p>실무 흐름에 AI를 직접 연결하는 방식이 생깁니다.</p>
-          </div>
-        </div>
-        <article class="outcome-card">
-          <h3>끌려가는 사람에서<br>주도하는 사람으로</h3>
-          <p>초안 작성, 소재 정리, 채널별 변환 등 반복 업무를 줄이고 더 중요한 기획과 판단에 집중하는 AX 역량이 생깁니다.</p>
-        </article>
+    <div class="outcome-headline">
+      <div class="outcome-headline-top">
+        <span class="outcome-pill">4주 후</span>
+        <h2>AI를 써보는 마케터가 아니라<br>AI로 일하는 마케터가 됩니다.</h2>
       </div>
-      <div class="outcome-row">
-        <article class="outcome-card">
-          <h3>AI를 활용하는<br>나만의 기준 형성</h3>
-          <p>내 업무 흐름 안에서 어디에 AI를 연결해야 효과가 나는지 판단하는 기준이 생깁니다.</p>
-        </article>
-        <article class="outcome-card">
-          <h3>일하는 속도와 구조가<br>함께 달라지는 경험</h3>
-          <p>그때그때 버티듯 일하는 방식에서 벗어나, 더 적게 반복하고 더 빠르게 실행하는 흐름을 만듭니다.</p>
-        </article>
-        <article class="outcome-card">
-          <h3>내 업무 역량을 보여줄<br>진짜 포트폴리오</h3>
-          <p>수강 과정에서 만든 산출물을 바탕으로 취업·이직이나 내부 평가에도 활용할 수 있는 AX 포트폴리오를 정리합니다.</p>
-        </article>
+      <div class="outcome-headline-body">
+        <p>반복 업무에 쫓기던 일상에서 벗어나, 콘텐츠를 만들고 확장하고 운영하는</p>
+        <p>실무 흐름에 AI를 직접 연결하는 방식이 생깁니다.</p>
       </div>
+    </div>
+    <div class="outcome-cards">
+      <article class="outcome-card">
+        <h3>AI를 활용하는<br>나만의 기준 형성</h3>
+        <p>내 업무 흐름 안에서 어디에 AI를 연결해야 효과가 나는지 판단하는 기준이 생깁니다.</p>
+      </article>
+      <article class="outcome-card">
+        <h3>일하는 속도와<br>구조가 함께<br>달라지는 경험</h3>
+        <p>그때그때 버티듯 일하는 방식에서 벗어나, 더 적게 반복하고 더 빠르게 실행하는 흐름을 만듭니다.</p>
+      </article>
+      <article class="outcome-card">
+        <h3>내 업무 역량을 보여줄<br>진짜 포트폴리오</h3>
+        <p>수강 과정에서 만든 산출물을 바탕으로 취업·이직이나 내부 평가에도 활용할 수 있는 AX 포트폴리오를 정리합니다.</p>
+      </article>
+      <article class="outcome-card">
+        <h3>끌려가는 사람에서<br>주도하는 사람으로</h3>
+        <p>초안 작성, 소재 정리, 채널별 변환 등 반복 업무를 줄이고 더 중요한 기획과 판단에 집중하는 AX 역량이 생깁니다.</p>
+      </article>
     </div>
   </section>
 
@@ -1790,7 +1949,7 @@
         <div class="tools-row">
           <article class="tool-card">
             <div class="tool-card-head">
-              <img class="tool-icon" loading="lazy" decoding="async" src="tool_chatgpt.svg" alt="ChatGPT">
+              <img class="tool-icon" loading="lazy" decoding="async" src="tool_chatgpt.svg" alt="ChatGPT" style="background:#f8f8f8;padding:10px;">
               <span class="tool-badge paid">유료 권장</span>
             </div>
             <div class="tool-body">
@@ -1889,7 +2048,7 @@
           </article>
           <article class="tool-card">
             <div class="tool-card-head">
-              <img class="tool-icon" loading="lazy" decoding="async" src="tool_make.svg" alt="Make" style="background:#fff;padding:12px;">
+              <img class="tool-icon" loading="lazy" decoding="async" src="tool_make.svg" alt="Make" style="background:#f8f8f8;padding:12px;">
               <span class="tool-badge free">무료 가능</span>
             </div>
             <div class="tool-body">
@@ -1918,29 +2077,29 @@
         <article class="testimonial-card">
           <p><strong>이걸 왜 이제야 했을까. </strong>반복적으로 손이 가던 준비 업무를 자동화하니, 시간을 빼앗기던 일에서 벗어나 더 중요한 판단과 실행에 집중할 수 있었습니다.</p>
           <div class="testimonial-author">
-            <span class="testimonial-name">박○린</span>
-            <span>마케터 · 5년차</span>
+            <span class="testimonial-name">정○혁</span>
+            <span>글로벌사업개발</span>
           </div>
         </article>
         <article class="testimonial-card">
           <p><strong>8시간 걸리던 일이 30분이 됐어요. </strong>막연하게만 느껴졌던 AI 활용이 실제 업무 시간 단축으로 이어지면서, AX 전환이 아이디어가 아니라 실무 방식의 변화라는 걸 체감했습니다.</p>
           <div class="testimonial-author">
-            <span class="testimonial-name">박○린</span>
-            <span>마케터 · 5년차</span>
+            <span class="testimonial-name">오○리</span>
+            <span>프로덕트디자이너</span>
           </div>
         </article>
         <article class="testimonial-card">
           <p><strong>비개발자도 AX 전환을 만들 수 있었어요. </strong>개발 지식이 없어도 직접 자동화와 업무 개선을 구현해보면서, AI는 일부 사람만의 영역이 아니라 누구나 업무에 연결할 수 있는 방식이라는 자신감이 생겼습니다.</p>
           <div class="testimonial-author">
-            <span class="testimonial-name">박○린</span>
-            <span>마케터 · 5년차</span>
+            <span class="testimonial-name">장○지</span>
+            <span>프로덕트오너</span>
           </div>
         </article>
         <article class="testimonial-card">
           <p><strong>작은 자동화 하나가 일하는 방식을 바꿨어요. </strong>단순 반복 업무가 효율화됐을 때의 짜릿함이 있었어요. 작은 자동화 하나만으로도 일하는 방식이 훨씬 가벼워지고, 더 중요한 일에 집중할 수 있다는 걸 체감했습니다.</p>
           <div class="testimonial-author">
-            <span class="testimonial-name">박○린</span>
-            <span>마케터 · 5년차</span>
+            <span class="testimonial-name">김○경</span>
+            <span>어카운트매니저</span>
           </div>
         </article>
       </div>
@@ -1956,23 +2115,29 @@
         </div>
       </header>
       <div class="satisfaction-cards">
-        <article class="score-card">
-          <span class="score-badge">만족도</span>
-          <div class="score-value">
-            <p class="score-num">4.4</p>
-            <p class="score-unit">/ 5</p>
+        <article class="score-card-group">
+          <p class="score-label">만족도</p>
+          <div class="score-card">
+            <div class="score-value">
+              <p class="score-num">4.4</p>
+              <p class="score-unit">/ 5</p>
+            </div>
           </div>
         </article>
-        <article class="score-card">
-          <span class="score-badge">추천 의향</span>
-          <div class="score-value">
-            <p class="score-num">4.8</p>
-            <p class="score-unit">/ 5</p>
+        <article class="score-card-group">
+          <p class="score-label">추천 의향</p>
+          <div class="score-card">
+            <div class="score-value">
+              <p class="score-num">4.8</p>
+              <p class="score-unit">/ 5</p>
+            </div>
           </div>
         </article>
-        <article class="score-card">
-          <span class="score-badge">AX 역량 성장 체감</span>
-          <p class="score-num">88%</p>
+        <article class="score-card-group">
+          <p class="score-label">AX 역량 성장 체감</p>
+          <div class="score-card">
+            <p class="score-num">88%</p>
+          </div>
         </article>
       </div>
     </div>
@@ -1982,8 +2147,7 @@
     <h2 class="benefits-title">배우는 순간보다, 끝난 뒤가 더 기대되는<br>AX 챌린저만의 혜택</h2>
     <div class="benefits-desc">
       <p>현직자 멘토링으로 다듬고, 밋업으로 연결되고, 커리어 기회로 이어집니다.</p>
-      <p>수강이 끝난 뒤에도 더 잘 일하고 더 멀리 갈 수 있도록 현직자에게 점검받고,</p>
-      <p>같은 방향의 사람들과 연결되며, 다음 기회까지 준비할 수 있습니다.</p>
+      <p>수강이 끝난 뒤에도 더 잘 일하고 더 멀리 갈 수 있도록 현직자에게 점검받고, 같은 방향의 사람들과 연결되며, 다음 기회까지 준비할 수 있습니다.</p>
     </div>
 
     <div class="benefits-grid">
@@ -2057,17 +2221,17 @@
           <p>마케팅 실무에 맞게 적용하는 힘은 멘토와 함께 잡아갑니다.</p>
         </div>
       </div>
-      <article class="instructor-card">
+      <article class="instructor-card instructor-card--lead">
         <div class="instructor-img">
-          <img src="instructor_silhouette.png" alt="" loading="lazy" decoding="async">
+          <img src="instructor_kim.webp" alt="강사 김기수" loading="lazy" decoding="async">
           <div class="instructor-label">
             <p class="role">강사</p>
             <p class="name">김기수</p>
           </div>
         </div>
         <div class="instructor-info">
-          <p class="instructor-position">원티드랩 AI 부문장</p>
-          <p class="instructor-bio">17년 이상 실무 경험을 가진 풀스택 엔지니어·AX 실무 교육 전문가. 툴을 아는 데서 끝나지 않고, 직접 구현하고 실무에 적용할 수 있도록 안내합니다.</p>
+          <p class="instructor-position">AX 실무 교육 전문가 · 풀스택 엔지니어<br>17년 이상의 실무 경험</p>
+          <p class="instructor-bio">툴을 아는 데서 끝나지 않고, 직접 구현하고 실무에 적용할 수 있도록 AX 전환의 실행 기준을 잡아드립니다.</p>
         </div>
       </article>
     </div>
@@ -2075,7 +2239,7 @@
     <div class="instructor-row">
       <article class="instructor-card">
         <div class="instructor-img">
-          <img src="instructor_silhouette.png" alt="" loading="lazy" decoding="async">
+          <img src="instructor_jung.webp" alt="멘토 정기수" loading="lazy" decoding="async">
           <div class="instructor-label">
             <p class="role">멘토</p>
             <p class="name">정기수</p>
@@ -2088,28 +2252,28 @@
       </article>
       <article class="instructor-card">
         <div class="instructor-img">
-          <img src="instructor_silhouette.png" alt="" loading="lazy" decoding="async">
+          <img src="instructor_lim.webp" alt="멘토 임근영" loading="lazy" decoding="async">
           <div class="instructor-label">
             <p class="role">멘토</p>
-            <p class="name">정기수</p>
+            <p class="name">임근영</p>
           </div>
         </div>
         <div class="instructor-info">
-          <p class="instructor-position">원티드랩 AI 부문장</p>
-          <p class="instructor-bio">AX 전환이 실제 업무 방식의 변화로 이어질 수 있도록, AI 관점에서 실무 적용의 방향과 기준을 제시합니다.</p>
+          <p class="instructor-position">원티드랩 퍼포먼스 마케터 · 16년차</p>
+          <p class="instructor-bio">배운 내용을 실제 업무에 붙이는 방법을 현업 마케터 관점에서 더 선명하게 잡아드리고, 지금의 업무 방식과 성장 방향에 대한 커리어 고민도 함께 나눕니다.</p>
         </div>
       </article>
       <article class="instructor-card">
         <div class="instructor-img">
-          <img src="instructor_silhouette.png" alt="" loading="lazy" decoding="async">
+          <img src="instructor_kim.webp" alt="멘토 김경수" loading="lazy" decoding="async">
           <div class="instructor-label">
             <p class="role">멘토</p>
-            <p class="name">정기수</p>
+            <p class="name">김경수</p>
           </div>
         </div>
         <div class="instructor-info">
-          <p class="instructor-position">원티드랩 AI 부문장</p>
-          <p class="instructor-bio">AX 전환이 실제 업무 방식의 변화로 이어질 수 있도록, AI 관점에서 실무 적용의 방향과 기준을 제시합니다.</p>
+          <p class="instructor-position">원티드랩 퍼포먼스 마케터 · 13년차</p>
+          <p class="instructor-bio">아이디어와 결과물을 현업 관점에서 함께 살펴보고, 실제 실행으로 이어질 수 있도록 필요한 포인트를 짚어드립니다. 현재 업무에서의 고민은 물론, 앞으로 어떤 방향으로 성장해나갈지에 대한 커리어 고민도 함께 나눕니다.</p>
         </div>
       </article>
     </div>
@@ -2118,102 +2282,192 @@
   </section>
 
   <section class="ax-section schedule">
-    <header class="schedule-head">
-      <h2 class="schedule-title">4주 AX 챌린지<br>언제, 어떻게 진행되는지 한눈에 확인하세요</h2>
-      <p class="schedule-desc">모집 마감부터 강의, 멘토링, 오프라인 밋업까지 AX 전환에 집중할 수 있도록 4주 일정을 한눈에 정리했습니다.</p>
-    </header>
+    <div class="schedule-layout">
+      <header class="schedule-head">
+        <h2 class="schedule-title">언제, 어떻게 진행되는지<br>한눈에 확인하세요.</h2>
+        <p class="schedule-desc">모집 마감부터 강의, 멘토링, 오프라인 밋업까지<br>AX 전환에 집중할 수 있도록 4주 일정을 한눈에 정리했습니다.</p>
+      </header>
 
-    <div class="schedule-steps">
-      <article class="step-card">
-        <div class="step-head">
-          <p class="step-num">01</p>
-          <h3 class="step-name">신청 &amp; 결제</h3>
-        </div>
-        <div class="step-body">
-          <p>5월 26일 18:00까지<br>정원 마감 시 조기 마감</p>
-          <p>하단 ‘참여 신청하기’ 버튼을 눌러 수강신청과 교육비 결제를 완료해주세요.</p>
-        </div>
-      </article>
-      <article class="step-card">
-        <div class="step-head">
-          <p class="step-num">02</p>
-          <h3 class="step-name">강의 시작</h3>
-        </div>
-        <div class="step-body">
-          <p>6월 2일 – 6월 11일<br>화 · 목 19:00 – 21:00</p>
-          <p>1회차 6월 2일 화요일<br>2회차 6월 4일 목요일<br>3회차 6월 9일 화요일<br>4회차 6월 11일 목요일</p>
-        </div>
-      </article>
-      <article class="step-card">
-        <div class="step-head">
-          <p class="step-num">03</p>
-          <h3 class="step-name">멘토링 진행</h3>
-        </div>
-        <div class="step-body">
-          <p>6월 16일 – 6월 25일<br>기간 내 진행</p>
-          <p>현직자 멘토와 함께 배운 내용을 실제 업무에 어떻게 적용할지 점검합니다.</p>
-        </div>
-      </article>
-      <article class="step-card">
-        <div class="step-head">
-          <p class="step-num">04</p>
-          <h3 class="step-name">오프라인 밋업</h3>
-        </div>
-        <div class="step-body">
-          <p>7월 1일 19:00 – 22:00<br>롯데타워 35층 원티드랩</p>
-          <p>강사 · 멘토 · 참가자가 직접 만나 네트워킹하며 커리어 기회를 확장합니다.</p>
-        </div>
-      </article>
-      <article class="step-card">
-        <div class="step-head">
-          <p class="step-num">05</p>
-          <h3 class="step-name">커뮤니티 참여</h3>
-        </div>
-        <div class="step-body">
-          <p>7월 1일 –</p>
-          <p>AX 챌린저 프라이빗 커뮤니티에서 맞춤형 채용공고 추천, 최신 트렌드와 인사이트 공유 혜택을 이어서 받아보세요.</p>
-        </div>
-      </article>
+      <div class="schedule-steps">
+        <article class="step-card">
+          <div class="step-head">
+            <p class="step-num">01</p>
+            <h3 class="step-name">신청 &amp; 결제</h3>
+          </div>
+          <div class="step-body">
+            <p>하단 ‘참여 신청하기’ 버튼을 눌러 수강신청과 교육비 결제를 완료해주세요.</p>
+            <div class="step-meta">
+              <p class="step-meta-label">일정</p>
+              <div class="step-meta-content">
+                <p>5월 26일 18:00까지</p>
+                <p>※ 정원 마감 시 조기 마감</p>
+              </div>
+            </div>
+          </div>
+        </article>
+        <article class="step-card">
+          <div class="step-head">
+            <p class="step-num">02</p>
+            <h3 class="step-name">강의 시작</h3>
+          </div>
+          <div class="step-body">
+            <div class="step-text-block">
+              <p>1회차 6월 2일 화요일</p>
+              <p>2회차 6월 4일 목요일</p>
+              <p>3회차 6월 9일 화요일</p>
+              <p>4회차 6월 11일 목요일</p>
+            </div>
+            <div class="step-meta">
+              <p class="step-meta-label">일정</p>
+              <p class="step-meta-content">화 · 목 19:00 – 21:00</p>
+            </div>
+          </div>
+        </article>
+        <article class="step-card">
+          <div class="step-head">
+            <p class="step-num">03</p>
+            <h3 class="step-name">멘토링 진행</h3>
+          </div>
+          <div class="step-body">
+            <p>현직자 멘토와 함께 배운 내용을 실제 업무에 어떻게 적용할지 점검합니다.</p>
+            <div class="step-meta">
+              <p class="step-meta-label">일정</p>
+              <div class="step-meta-content">
+                <p>6월 16일 – 6월 25일</p>
+                <p>※ 기간 내 진행</p>
+              </div>
+            </div>
+          </div>
+        </article>
+        <article class="step-card">
+          <div class="step-head">
+            <p class="step-num">04</p>
+            <h3 class="step-name">오프라인 밋업</h3>
+          </div>
+          <div class="step-body">
+            <p>강사 · 멘토 · 참가자가 직접 만나 네트워킹하며 커리어 기회를 확장합니다.</p>
+            <div class="step-meta-group">
+              <div class="step-meta">
+                <p class="step-meta-label">일정</p>
+                <p class="step-meta-content">7월 1일 19:00 – 22:00</p>
+              </div>
+              <div class="step-meta">
+                <p class="step-meta-label">장소</p>
+                <p class="step-meta-content">잠실 롯데타워 35층 원티드랩</p>
+              </div>
+            </div>
+          </div>
+        </article>
+        <article class="step-card">
+          <div class="step-head">
+            <p class="step-num">05</p>
+            <h3 class="step-name">커뮤니티 참여</h3>
+          </div>
+          <div class="step-body">
+            <p>AX 챌린저 프라이빗 커뮤니티에서 맞춤형 채용공고 추천, 최신 트렌드와 인사이트 공유 혜택을 이어서 받아보세요.</p>
+            <div class="step-meta">
+              <p class="step-meta-label">일정</p>
+              <p class="step-meta-content">7월 1일 –</p>
+            </div>
+          </div>
+        </article>
+      </div>
     </div>
   </section>
 
   <section class="ax-section faq">
     <div class="faq-group">
       <h2 class="faq-section-title">자주 묻는 질문</h2>
+
       <div class="faq-item">
         <p class="faq-q">Q. 어떤 분들에게 가장 잘 맞는 프로그램인가요?</p>
-        <ul class="faq-a"><li>AI를 한 번쯤 써봤지만 아직 내 실무 방식은 바뀌지 않았다고 느끼는 마케터. 특히 콘텐츠 마케터, 퍼포먼스 마케터처럼 반복 업무를 줄이고 실행력을 높이고 싶은 분들께 가장 잘 맞습니다.</li></ul>
+        <ul class="faq-a">
+          <li>AI를 한 번쯤 써봤지만 아직 내 실무 방식은 바뀌지 않았다고 느끼는 마케터에게 가장 잘 맞습니다. 특히 콘텐츠 마케터, 퍼포먼스 마케터처럼 반복 업무를 줄이고 실행력을 높이는 방식으로 AI를 실무에 적용해보고 싶은 분들께 추천드립니다.</li>
+        </ul>
       </div>
+
       <div class="faq-item">
         <p class="faq-q">Q. AX 역량이 아직 부족해도 참여할 수 있나요?</p>
-        <ul class="faq-a"><li>네, 가능합니다. AI를 한 번쯤 써봤지만 아직 내 업무에 어떻게 적용해야 할지 막막한 마케터를 위해 설계된 과정입니다.</li></ul>
+        <ul class="faq-a">
+          <li>네, 가능합니다. AX 챌린지는 AI를 한 번쯤 써봤지만, 아직 내 업무에 어떻게 적용해야 할지 막막한 마케터를 위해 설계된 과정입니다. 마케터의 실무 흐름에 맞춰 차근차근 따라오실 수 있도록 구성되어 있어, AX 경험이 많지 않아도 충분히 참여하실 수 있습니다.</li>
+        </ul>
       </div>
+
       <div class="faq-item">
         <p class="faq-q">Q. 강의는 어떤 방식으로 진행되나요?</p>
-        <ul class="faq-a"><li>총 4회의 온라인 라이브 강의로 진행됩니다. 정해진 일정에 맞춰 실시간으로 참여하면서 AX를 어떻게 적용할지 직접 익혀가게 됩니다.</li></ul>
+        <ul class="faq-a">
+          <li>강의는 총 4회의 온라인 라이브 강의로 진행됩니다. 정해진 일정에 맞춰 실시간으로 참여하면서, 콘텐츠 제작부터 운영 자동화까지 마케터의 실제 업무 흐름 안에서 AI를 어떻게 적용할지 직접 익혀가게 됩니다.</li>
+        </ul>
       </div>
+
       <div class="faq-item">
         <p class="faq-q">Q. 강의 다시 보기 제공이 가능한가요?</p>
-        <ul class="faq-a"><li>네, 온라인 라이브 강의 4회는 다시 보기가 제공될 예정입니다. 단, 멘토링 세션은 개인정보보호 및 실시간 참여 중심으로 운영되어 다시 보기가 제공되지 않습니다.</li></ul>
+        <ul class="faq-a">
+          <li>네, 총 4회 진행되는 온라인 라이브 강의는 다시 보기가 제공될 예정입니다. 일정 상 라이브 강의를 놓치는 분들은 다시 보기 서비스를 활용하실 수 있습니다. 다만, 멘토링 세션은 개인정보 보호와 실시간 참여 중심 운영 특성상 다시 보기가 제공되지 않습니다.</li>
+        </ul>
       </div>
+
       <div class="faq-item">
         <p class="faq-q">Q. 멘토링은 어떻게 진행되나요?</p>
-        <ul class="faq-a"><li>3명의 멘토가 각각 진행하는 온라인 그룹 멘토링으로 운영됩니다. 특강(전체 참여) + 소규모 그룹 멘토링(한 그룹 최대 15명 이내) 방식으로 진행됩니다.</li></ul>
+        <ul class="faq-a">
+          <li>
+            멘토링은 3명의 멘토가 각각 진행하는 온라인 그룹 멘토링으로 운영됩니다. 멘토링에서는 수강 중 만든 작업물과 업무 적용 결과물에 대한 피드백은 물론, 앞으로의 성장 방향에 대한 커리어 고민도 함께 나눌 수 있습니다.<br>
+            특강 : 멘토링 대상자 전체가 함께 참여하는 온라인 세션으로 진행됩니다.<br>
+            소규모 그룹 멘토링 : 한 그룹당 최대 15명 이내로, 온라인으로 진행됩니다.<br>
+            ※ 정확한 피드백을 위해 멘토링 참여를 원하시는 분은 저희가 안내드리는 사전 설문과 개인 작업물을 사전에 제출해주셔야 합니다.<br>
+            ※ 조 편성은 랜덤 배정으로 운영됩니다.
+          </li>
+        </ul>
       </div>
+
       <div class="faq-item">
         <p class="faq-q">Q. 멘토링 참석은 필수인가요?</p>
-        <ul class="faq-a"><li>네, 필수입니다. 멘토링까지 참여해야 이 과정의 핵심 가치를 제대로 가져가실 수 있습니다.</li></ul>
+        <ul class="faq-a">
+          <li>
+            네, 멘토링은 이 과정의 핵심 구성으로 필수 참여를 권장합니다. 이번 AX 챌린지는 강의를 듣고 끝나는 과정이 아니라, 멘토의 피드백을 통해 내 업무에 어떻게 적용할지 점검하고 현재 내 업무 방식과 성장 방향까지 함께 정리해보는 과정입니다. 그만큼 멘토링까지 참여하셔야 이 과정의 핵심 가치를 온전히 가져가실 수 있습니다.<br>
+            ※ 운영 상 그룹 배정을 위해 온라인 강의 종료 전 별도 신청이 진행될 예정입니다.
+          </li>
+        </ul>
+      </div>
+
+      <div class="faq-item">
+        <p class="faq-q">Q. 오프라인 밋업은 어떤 자리인가요?</p>
+        <ul class="faq-a">
+          <li>강사, 멘토, 참가자가 직접 만나 네트워킹하고, 실무 경험과 업무 인사이트를 나누는 자리입니다. 잠실 롯데타워 35층 원티드랩 오피스에서 퇴근 후 시간에 진행되며, 온라인에서 쌓아온 배움을 오프라인에서 더 밀도 있게 연결해보실 수 있습니다. 디테일한 사항은 참가자에 한해 별도 안내드립니다.</li>
+        </ul>
+      </div>
+
+      <div class="faq-item">
+        <p class="faq-q">Q. 법인카드 결제나 팀 단위 참여도 가능한가요?</p>
+        <ul class="faq-a">
+          <li>네, 가능합니다. 개인 신청뿐 아니라 법인카드 결제도 가능하며, 팀 단위로 함께 참여하거나 한 분이 일괄 결제 하고 싶으신 경우 별도 문의를 통해 안내받으실 수 있습니다.</li>
+        </ul>
+      </div>
+
+      <div class="faq-item">
+        <p class="faq-q">Q. 유료 AI 툴을 꼭 미리 준비해야 하나요?</p>
+        <ul class="faq-a">
+          <li>처음부터 모든 툴을 유료로 준비하실 필요는 없습니다. 일부 툴은 유료 버전 사용이 더 편할 수 있지만, 익숙한 툴부터 시작하고 필요한 만큼 확장해가셔도 충분히 참여하실 수 있도록 구성되어 있습니다. ChatGPT, Claude를 제외한 대부분의 툴은 무료로도 실습이 가능합니다.</li>
+        </ul>
+      </div>
+
+      <div class="faq-item">
+        <p class="faq-q">Q. 다른 AI 강의와 어떤 점이 다른가요?</p>
+        <ul class="faq-a">
+          <li>AX 챌린지는 VOD를 보고 끝나는 강의가 아니라, 라이브 강의부터 실습, 멘토링, 오프라인 밋업, 커뮤니티 연결까지 이어지는 실전형 챌린지입니다. 배우는 데서 끝나지 않고, 실제 업무에 적용할 수 있는 방식과 커리어 노하우를 배우고, 더 효율적으로 일하는 기준을 잡아가는 데 초점을 맞추고 있습니다.</li>
+        </ul>
       </div>
     </div>
 
     <div class="notice-group">
       <h2 class="faq-section-title">공지사항</h2>
+
       <div class="notice-block">
         <h3 class="notice-block-title">학습 규정</h3>
         <ul>
           <li>본 프로그램은 온라인 라이브 강의, 멘토링, 오프라인 밋업으로 구성된 실전형 챌린지입니다. 안내된 일정에 맞게 참여해주셔야 합니다.</li>
           <li>온라인 라이브 강의 4회에 한해 다시 보기가 제공될 예정입니다. 다만 멘토링 세션은 개인정보 보호 및 실시간 피드백 중심 운영으로 다시 보기가 제공되지 않습니다.</li>
-          <li>멘토링은 실무 피드백 중심으로 진행되며, 멘토링 참여를 원하는 분은 개인 작업물을 필수 제출해주셔야 합니다. 제출 여부에 따라 일부 혜택 참여가 제한될 수 있습니다.</li>
+          <li>멘토링은 결과물 피드백과 실무 고민 상담 중심으로 진행되며, 멘토링 참여를 원하는 분은 개인 작업물을 필수 제출해주셔야 합니다. 제출 여부에 따라 일부 혜택 참여가 제한될 수 있습니다.</li>
           <li>오프라인 밋업 일정 및 장소, 멘토진 구성 및 일정은 운영 상황에 따라 일부 변경될 수 있으며, 변경 시 신청자 대상으로 별도 안내드립니다.</li>
           <li>강의 영상, 자료, 실습 자료의 무단 공유·배포·캡처·판매 및 계정 공유는 금지되며, 운영 정책에 따라 이용이 제한될 수 있습니다.</li>
         </ul>
@@ -2225,7 +2479,7 @@
           <li>환불은 실제 결제 금액 기준으로 산정되며, 포인트 또는 프로모션 혜택 적용 후 취소 시 사용한 혜택은 복구되지 않을 수 있습니다.</li>
         </ul>
       </div>
-      <p class="notice-contact">추가 문의사항 | learning@wantedlab.com</p>
+      <p class="notice-contact">추가 문의는 learning@wantedlab.com 으로 편하게 남겨주세요.</p>
     </div>
   </section>
 
@@ -2336,20 +2590,73 @@
       });
     }
 
-    // 모바일에선 detail panel을 활성 탭 직후로 이동 (아코디언 형태)
+    // 모바일 전용: 회차별 dynamic detail 패널 생성 (다중 오픈 지원)
+    function buildMobileDetailPanel(week) {
+      const data = CURRICULUM_DATA[week];
+      if (!data) return null;
+      const panel = document.createElement('div');
+      panel.className = 'tab-detail';
+      panel.dataset.weekDetail = week;
+      panel.setAttribute('role', 'tabpanel');
+      panel.innerHTML = `
+        <h3 class="tab-detail-title">${data.title}</h3>
+        <div class="detail-row">
+          <span class="detail-label">일정</span>
+          <p>${data.schedule}</p>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">내용</span>
+          <ul>${data.topics.map(t => `<li>${t}</li>`).join('')}</ul>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">과제</span>
+          <div>${data.assignment.map(t => `<p>${t}</p>`).join('')}</div>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">산출물</span>
+          <ul>${data.deliverables.map(t => `<li>${t}</li>`).join('')}</ul>
+        </div>
+      `;
+      return panel;
+    }
+    function clearMobileDynamicPanels() {
+      document.querySelectorAll('.tab-detail[data-week-detail]').forEach(p => p.remove());
+    }
+
+    // 모바일: 활성 탭 각각에 대해 dynamic 패널 자동 생성 (다중 오픈)
+    // 데스크탑: 활성 탭 1개 + 단일 detail 패널만 노출
     function arrangeCurriculum() {
       const tabsContainer = document.querySelector('.curriculum-tabs');
       const tabList = document.querySelector('.tab-list');
-      const tabDetail = document.querySelector('.tab-detail');
-      const activeTab = document.querySelector('.tab-item.active');
-      if (!tabsContainer || !tabList || !tabDetail || !activeTab) return;
+      const tabDetail = document.querySelector('.tab-detail:not([data-week-detail])');
+      if (!tabsContainer || !tabList || !tabDetail) return;
+
       if (innerWidth <= 768) {
-        // 활성 탭 바로 다음으로 detail 이동
-        if (activeTab.nextSibling !== tabDetail) {
-          activeTab.after(tabDetail);
-        }
+        // 모바일: primary detail 숨기고, 활성 탭마다 dynamic 패널 보장
+        tabDetail.style.display = 'none';
+        document.querySelectorAll('.tab-item.active').forEach(btn => {
+          const week = btn.dataset.week;
+          const next = btn.nextElementSibling;
+          if (!next || next.dataset.weekDetail !== week) {
+            const panel = buildMobileDetailPanel(week);
+            if (panel) btn.after(panel);
+          }
+        });
       } else {
-        // 데스크탑: detail을 tabs container 끝으로 복귀
+        // 데스크탑: dynamic 패널 모두 제거
+        clearMobileDynamicPanels();
+        // 다중 active 정리 (모바일에서 여러 개 열린 채 리사이즈된 경우)
+        const allActive = document.querySelectorAll('.tab-item.active');
+        if (allActive.length > 1) {
+          allActive.forEach((t, i) => { if (i > 0) t.classList.remove('active'); });
+        }
+        let activeTab = document.querySelector('.tab-item.active');
+        if (!activeTab) {
+          setCurriculumWeek('1');
+        } else {
+          setCurriculumWeek(activeTab.dataset.week);
+        }
+        tabDetail.style.display = '';
         if (tabDetail.parentNode !== tabsContainer || tabDetail.previousElementSibling !== tabList) {
           tabsContainer.appendChild(tabDetail);
         }
@@ -2358,8 +2665,26 @@
 
     document.querySelectorAll('.tab-item').forEach(btn => {
       btn.addEventListener('click', () => {
-        setCurriculumWeek(btn.dataset.week);
-        arrangeCurriculum();
+        const isMobile = innerWidth <= 768;
+        const week = btn.dataset.week;
+        const isActive = btn.classList.contains('active');
+
+        if (isMobile) {
+          // 모바일: 클릭한 탭만 토글 (다른 탭의 상태는 유지 — 다중 오픈 가능)
+          if (isActive) {
+            btn.classList.remove('active');
+            const next = btn.nextElementSibling;
+            if (next && next.dataset.weekDetail === week) next.remove();
+          } else {
+            btn.classList.add('active');
+            const panel = buildMobileDetailPanel(week);
+            if (panel) btn.after(panel);
+          }
+        } else {
+          // 데스크탑: 단일 active
+          setCurriculumWeek(week);
+          arrangeCurriculum();
+        }
       });
     });
 
@@ -2762,32 +3087,28 @@
       dispSource.scale.set(maxDim * 0.5, maxDim * 0.5, 1);
     });
 
-    // 인트로 영역 중앙에 키캡 + MARKETING 위치하도록 shift 계산 (CSS 규칙과 일치)
-    //   - 모바일(≤768px): 625px
-    //   - iframe 임베드: 850px
-    //   - 그 외 데스크탑 단독: 100vh (shift 없음)
+    // 키캡 + MARKETING/FRONTIERS 텍스트가 헤더와 푸터 사이 중앙에 위치하도록 shift 계산
+    //   header bottom edge ↔ footer top edge 의 정확한 중앙으로 정렬
     let embedShiftY = 0;
-    function getIntroHeight() {
-      if (innerWidth <= 768) return 625;
-      if (document.documentElement.classList.contains('is-embedded')) return 850;
-      return innerHeight;
-    }
     function updateEmbedShift() {
-      const introH = getIntroHeight();
+      const header = document.querySelector('.ax-header');
+      const footer = document.querySelector('.ax-footer');
       let shiftPx = 0;
-      if (introH >= innerHeight) {
-        embedShiftY = 0;
-      } else {
-        const visH = 2 * camera.position.z * Math.tan(camera.fov * Math.PI / 360);
-        shiftPx = (innerHeight - introH) / 2;
-        embedShiftY = shiftPx * (visH / innerHeight);
+      if (header && footer) {
+        const headerBottom = header.offsetTop + header.offsetHeight;
+        const footerTop = footer.offsetTop;
+        const desiredCenter = (headerBottom + footerTop) / 2;
+        shiftPx = desiredCenter - innerHeight / 2;   // 양수 = 아래로 이동
       }
+      const visH = 2 * camera.position.z * Math.tan(camera.fov * Math.PI / 360);
+      // 화면 Y는 아래가 양수, 월드 Y는 위가 양수 → 부호 반전
+      embedShiftY = -shiftPx * (visH / innerHeight);
       textPlane.position.y = embedShiftY;
 
-      // Press the keycap 힌트도 동일한 수직 중앙 정렬 적용
+      // Press the keycap 힌트도 동일한 위치로 정렬 (transform Y는 화면 좌표)
       const hintEl = document.getElementById('introHint');
       if (hintEl) {
-        hintEl.style.transform = `translate(-50%, calc(-50% - ${shiftPx}px))`;
+        hintEl.style.transform = `translate(-50%, calc(-50% + ${shiftPx}px))`;
       }
     }
     updateEmbedShift();
@@ -2799,9 +3120,14 @@
       if (model) {
         const t = performance.now() * 0.001;
 
+        // 모바일에서는 마우스 추적 비활성화 — 둥둥 뜨는 모션만 유지
+        const isMobile = innerWidth <= 768;
+        const followNX = isMobile ? 0 : mouseNX;
+        const followNY = isMobile ? 0 : mouseNY;
+
         // ── 회전: 마우스 방향으로 살짝 향함 ──
-        const targetRotX = BASE_ROT_X + mouseNY * FOLLOW_X;
-        const targetRotY = BASE_ROT_Y + mouseNX * FOLLOW_Y;
+        const targetRotX = BASE_ROT_X + followNY * FOLLOW_X;
+        const targetRotY = BASE_ROT_Y + followNX * FOLLOW_Y;
         curRotX += (targetRotX - curRotX) * 0.06;
         curRotY += (targetRotY - curRotY) * 0.06;
         model.rotation.x = curRotX;
@@ -2812,9 +3138,9 @@
         const visW = visH * camera.aspect;
         const FOLLOW_POS_X = 0.40;   // 화면 너비의 ±40%까지 따라옴
         const FOLLOW_POS_Y = 0.35;   // 화면 높이의 ±35%까지 따라옴
-        const floatY = Math.sin(t * 0.85) * (RADIUS * 0.010);
-        const targetPosX =  mouseNX * visW * FOLLOW_POS_X;
-        const targetPosY = -mouseNY * visH * FOLLOW_POS_Y + modelBaseY + floatY + embedShiftY;
+        const floatY = Math.sin(t * 1.1) * (RADIUS * 0.03);     // 둥둥 뜨는 모션 (진폭·주기 강화)
+        const targetPosX =  followNX * visW * FOLLOW_POS_X;
+        const targetPosY = -followNY * visH * FOLLOW_POS_Y + modelBaseY + floatY + embedShiftY;
 
         // 더 빠른 추적 (damping 0.05 → 0.10)
         model.position.x += (targetPosX - model.position.x) * 0.10;
@@ -2858,7 +3184,7 @@
         const problemTop = problemEl.offsetTop;
         const fadeInStart = intro * 0.5;
         const fadeInEnd = problemTop;
-        const MAX_BLUR = 30;
+        const MAX_BLUR = 50;
         if (scroll < fadeInStart) {
           blur = 0;
         } else if (scroll < fadeInEnd) {
