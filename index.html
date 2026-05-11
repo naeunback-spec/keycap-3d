@@ -57,6 +57,11 @@
     }
 
     /* ── 섹션 공통 ─────────────────────────────────────────────── */
+    /* 데스크톱 섹션 사이드 패딩: 뷰포트에 따라 32px(좁음) → 190px(넓음) 선형 보간
+       769px 뷰포트 → 32px / 1440px 뷰포트 → 190px / 1440px↑ → 190px 고정 */
+    :root {
+      --section-px: clamp(32px, calc(23.55vw - 149px), 190px);
+    }
     /* 캔버스(z-1) 위로 카드만 띄우고, 텍스트는 캔버스 뒤로 → 키캡이 텍스트 위로 떠보임 */
     .ax-section {
       position: relative;
@@ -134,7 +139,7 @@
       top: 60px;
       left: 50%;
       transform: translateX(-50%);
-      width: calc(100% - 380px);   /* 좌우 190px 패딩 */
+      width: calc(100% - (var(--section-px) * 2));   /* 좌우 section-px 패딩 (반응형) */
       max-width: 1100px;
       display: flex;
       flex-direction: column;
@@ -165,7 +170,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      width: calc(100% - 380px);
+      width: calc(100% - (var(--section-px) * 2));
       max-width: 1100px;
       bottom: 60px;
       display: flex;
@@ -182,6 +187,8 @@
     .ax-footer p { margin: 0; }
     .ax-footer .ax-subtitle { text-align: left; }
     .ax-footer p:last-child { text-align: right; }
+    /* 모바일에서만 추가 줄바꿈 (데스크톱은 기본 2줄 유지) */
+    .ax-footer br.m-only { display: none; }
 
     /* ── 다크 섹션 공통 ─────────────────────────────────────────── */
     /* 키캡(캔버스)이 모든 섹션에 떠 있어 dispersion 효과로 글로우 룩 자체 생성.
@@ -192,7 +199,7 @@
     .ax-section.problem {
       background: transparent;
       color: #000;
-      padding: 160px 190px 0;       /* 다음 섹션(signal)과 160px 간격 — 그룹 내 흐름 */
+      padding: 160px var(--section-px) 0;       /* 다음 섹션(signal)과 160px 간격 — 그룹 내 흐름 */
       position: relative;
       z-index: 2;
     }
@@ -236,15 +243,9 @@
       flex: 1 0 0;                  /* 4 카드 균등 분배 */
       min-width: 0;
       min-height: 250px;            /* Figma h-[250px] (콘텐츠 길어지면 늘어남) */
-      /* Figma Glass: Refraction 80 + Frost 4 + Light -45° 80% + Depth 20 */
+      /* 기본 상태: frost 효과 OFF, f8f8f8 20% 컬러만 적용 (호버 시 frost 강화) */
       background: rgba(248, 248, 248, 0.2);
-      backdrop-filter: blur(16px) saturate(160%);
-      -webkit-backdrop-filter: blur(16px) saturate(160%);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      box-shadow:
-        inset 0.5px 0.5px 1px rgba(255, 255, 255, 0.5),
-        inset -1px -1px 1px rgba(0, 0, 0, 0.04),
-        0 8px 32px rgba(20, 25, 30, 0.06);
+      border: 1px solid transparent;
       color: #14191e;
       border-radius: 24px;
       padding: 24px;
@@ -263,7 +264,7 @@
     .ax-section.signal {
       background: transparent;
       color: #000;
-      padding: 160px 190px 0;       /* 다음 섹션(solution)과 160px 간격 */
+      padding: 160px var(--section-px) 0;       /* 다음 섹션(solution)과 160px 간격 */
       display: flex;
       flex-direction: column;
       align-items: center;   /* 가운데 정렬 */
@@ -344,7 +345,7 @@
     .ax-section.solution {
       background: transparent;
       color: #000;
-      padding: 160px 190px 0;       /* 다음 섹션(outcome)과 160px 간격 */
+      padding: 160px var(--section-px) 0;       /* 다음 섹션(outcome)과 160px 간격 */
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -386,15 +387,9 @@
     .solution-card {
       min-width: 0;
       height: 250px;
-      /* Figma Glass effect */
+      /* 기본 상태: frost OFF, f8f8f8 20% 컬러만 (호버 시 frost 강화) */
       background: rgba(248, 248, 248, 0.2);
-      backdrop-filter: blur(16px) saturate(160%);
-      -webkit-backdrop-filter: blur(16px) saturate(160%);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      box-shadow:
-        inset 0.5px 0.5px 1px rgba(255, 255, 255, 0.5),
-        inset -1px -1px 1px rgba(0, 0, 0, 0.04),
-        0 8px 32px rgba(20, 25, 30, 0.06);
+      border: 1px solid transparent;
       color: #000;
       border-radius: 24px;
       padding: 30px;
@@ -444,7 +439,7 @@
     .ax-section.outcome {
       background: transparent;
       color: #000;
-      padding: 160px 190px;
+      padding: 160px var(--section-px);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -464,20 +459,9 @@
       flex-direction: column;
       gap: 10px;                    /* pill ↔ title (Figma) */
     }
-    .outcome-pill {
-      display: inline-flex;
-      align-self: flex-start;
-      align-items: center;
-      font-size: 48px;              /* Figma H4_Title/SB */
-      font-weight: 600;
-      line-height: 1.5;
-      letter-spacing: -0.015em;
-      color: #14191e;
-      white-space: nowrap;
-    }
     .outcome-headline h2 {
       font-size: 48px;
-      font-weight: 500;             /* Medium */
+      font-weight: 600;             /* Figma H4_Title/SB */
       line-height: 1.5;
       letter-spacing: -0.015em;
       color: #14191e;               /* Figma --black */
@@ -500,15 +484,9 @@
     .outcome-card {
       min-width: 0;
       height: 200px;
-      /* Figma Glass effect */
+      /* 기본 상태: frost OFF, f8f8f8 20% 컬러만 (호버 시 frost 강화) */
       background: rgba(248, 248, 248, 0.2);
-      backdrop-filter: blur(16px) saturate(160%);
-      -webkit-backdrop-filter: blur(16px) saturate(160%);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      box-shadow:
-        inset 0.5px 0.5px 1px rgba(255, 255, 255, 0.5),
-        inset -1px -1px 1px rgba(0, 0, 0, 0.04),
-        0 8px 32px rgba(20, 25, 30, 0.06);
+      border: 1px solid transparent;
       border-radius: 24px;
       padding: 24px;
       display: flex;
@@ -541,7 +519,7 @@
     .ax-section.curriculum {
       background: #f2f1f1;
       color: #000;
-      padding: 160px 190px 0;       /* 다음 섹션(tools)과 160px 간격 */
+      padding: 160px var(--section-px) 0;       /* 다음 섹션(tools)과 160px 간격 */
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -686,7 +664,7 @@
     .ax-section.tools {
       background: #f2f1f1;
       color: #000;
-      padding: 160px 190px;
+      padding: 160px var(--section-px);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -808,7 +786,7 @@
     .ax-section.reference {
       background: #fff;             /* Figma frtr-white */
       color: #000;
-      padding: 160px 190px 0;       /* 다음 섹션(benefits)과 160px 간격 */
+      padding: 160px var(--section-px) 0;       /* 다음 섹션(benefits)과 160px 간격 */
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -981,7 +959,7 @@
     .ax-section.benefits {
       background: #fff;             /* Figma frtr-white */
       color: #000;
-      padding: 160px 190px;
+      padding: 160px var(--section-px);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -1025,11 +1003,11 @@
       background: transparent;
       border: 1px solid #ececec;    /* Figma gy-02 */
       border-radius: 24px;
-      padding: 40px;
-      min-height: 250px;            /* 내용이 길어지면 카드가 늘어남 */
+      padding: 24px;
+      min-height: 200px;            /* 내용이 길어지면 카드가 늘어남 */
       display: flex;
       align-items: flex-start;      /* Figma items-start */
-      gap: 20px;                    /* 컬럼 간 최소 간격 */
+      gap: 40px;                    /* 좌/우 컬럼 간 간격 */
     }
     .benefit-left {
       display: flex;
@@ -1074,7 +1052,7 @@
     .ax-section.schedule {
       background: transparent;
       color: #000;
-      padding: 160px 190px;
+      padding: 160px var(--section-px);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -1194,7 +1172,7 @@
     .ax-section.price {
       background: transparent;
       color: #000;
-      padding: 160px 190px 0;       /* 다음 섹션(instructors)과 160px 간격 */
+      padding: 160px var(--section-px) 0;       /* 다음 섹션(instructors)과 160px 간격 */
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -1227,15 +1205,9 @@
     .price-box {
       width: 100%;
       max-width: 1100px;
-      /* Figma Glass effect */
+      /* 기본 상태: frost OFF, f8f8f8 20% 컬러만 (호버 시 frost 강화) */
       background: rgba(248, 248, 248, 0.2);
-      backdrop-filter: blur(16px) saturate(160%);
-      -webkit-backdrop-filter: blur(16px) saturate(160%);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      box-shadow:
-        inset 0.5px 0.5px 1px rgba(255, 255, 255, 0.5),
-        inset -1px -1px 1px rgba(0, 0, 0, 0.04),
-        0 8px 32px rgba(20, 25, 30, 0.06);
+      border: 1px solid transparent;
       color: #14191e;
       border-radius: 24px;
       padding: 48px;
@@ -1297,7 +1269,7 @@
     .ax-section.instructors {
       background: transparent;
       color: #000;
-      padding: 160px 190px 0;       /* 다음 섹션(schedule)과 160px 간격 */
+      padding: 160px var(--section-px) 0;       /* 다음 섹션(schedule)과 160px 간격 */
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -1363,8 +1335,9 @@
       inset: 0;
       width: 100%;
       height: 100%;
-      object-fit: contain;                /* 자연 비율 유지 — 잘림 없이 전체 실루엣 표시 */
-      object-position: right top;         /* 우측 상단 anchor (좌측 상단 라벨과 겹치지 않음) */
+      /* 이미지가 이미 340×240 프레임으로 export됨 (Figma 13051:29562) — 별도 변형 없이 그대로 표시 */
+      object-fit: cover;
+      object-position: center top;
     }
     .instructor-label {
       position: absolute;
@@ -1394,16 +1367,10 @@
     }
     .instructor-info {
       width: 340px;
-      /* Figma Glass effect — instructor card 하단 정보 영역 */
+      /* 기본 상태: frost OFF, f8f8f8 20% 컬러만 (호버 시 frost 강화) */
       background: rgba(248, 248, 248, 0.2);
-      backdrop-filter: blur(16px) saturate(160%);
-      -webkit-backdrop-filter: blur(16px) saturate(160%);
-      border: 1px solid rgba(255, 255, 255, 0.25);
+      border: 1px solid transparent;
       border-top: none;                   /* 위는 이미지와 연결되므로 border 제거 */
-      box-shadow:
-        inset 0.5px 0 1px rgba(255, 255, 255, 0.5),
-        inset -1px -1px 1px rgba(0, 0, 0, 0.04),
-        0 8px 32px rgba(20, 25, 30, 0.06);
       border-bottom-left-radius: 24px;
       border-bottom-right-radius: 24px;
       padding: 20px 30px 35px;
@@ -1444,7 +1411,7 @@
     .ax-section.faq {
       background: #14191e;          /* Figma --black */
       color: #fff;
-      padding: 160px 190px;
+      padding: 160px var(--section-px);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -1532,6 +1499,25 @@
       margin: 0;
     }
 
+    /* ── 스크롤 reveal: 뷰포트 진입 시 fade-in + 살짝 위로 슬라이드 ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+      will-change: opacity, transform;
+    }
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+    }
+
     /* Glass frost 카드 hover lift + frost 강화 — 마우스 환경(데스크톱)에서만 */
     @media (hover: hover) {
       /* 카드 자체: transform + (해당되는 경우) backdrop-filter 트랜지션 */
@@ -1541,12 +1527,16 @@
       .price-box {
         transition: transform 0.3s ease,
                     backdrop-filter 0.3s ease,
-                    -webkit-backdrop-filter 0.3s ease;
+                    -webkit-backdrop-filter 0.3s ease,
+                    border-color 0.3s ease,
+                    box-shadow 0.3s ease;
       }
       .instructor-card { transition: transform 0.3s ease; }
       .instructor-info {
         transition: backdrop-filter 0.3s ease,
-                    -webkit-backdrop-filter 0.3s ease;
+                    -webkit-backdrop-filter 0.3s ease,
+                    border-color 0.3s ease,
+                    box-shadow 0.3s ease;
       }
       /* 호버 lift */
       .problem-card:hover,
@@ -1556,7 +1546,7 @@
       .instructor-card:hover {
         transform: translateY(-10px);
       }
-      /* 호버 시 frost 강도 16px → 24px (saturate도 160% → 180%) */
+      /* 호버 시 frost 강도 + glass 두께(border·inset shadow) 활성화 */
       .problem-card:hover,
       .solution-card:hover,
       .outcome-card:hover,
@@ -1564,66 +1554,151 @@
       .instructor-card:hover .instructor-info {
         backdrop-filter: blur(24px) saturate(180%);
         -webkit-backdrop-filter: blur(24px) saturate(180%);
+        border-color: rgba(255, 255, 255, 0.25);
+        box-shadow:
+          inset 0.5px 0.5px 1px rgba(255, 255, 255, 0.5),
+          inset -1px -1px 1px rgba(0, 0, 0, 0.04),
+          0 8px 32px rgba(20, 25, 30, 0.06);
       }
     }
 
     /* ── 반응형 ────────────────────────────────────────────────── */
+    /* 중간 뷰포트(769px ~ 1100px): 카드 내 가로 컬럼 레이아웃이 답답해지는 구간 보정 */
+    @media (min-width: 769px) and (max-width: 1100px) {
+      /* testimonial 4-in-a-row → 2×2 그리드 */
+      .testimonial-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+      .testimonial-card {
+        flex: none;
+        min-height: 240px;
+      }
+      /* benefit-card 가로 2컬럼(타이틀|설명) → 세로 스택으로 전환
+         (좁은 폭에서 텍스트가 카드 밖으로 넘치지 않도록) */
+      .benefit-card {
+        flex-direction: column;
+        gap: 16px;
+      }
+      .benefit-left {
+        flex: 0 0 auto;
+        width: 100%;
+        max-width: 100%;
+      }
+      .benefit-desc {
+        flex: 0 0 auto;
+      }
+    }
+
     /* 태블릿 브레이크포인트 제거 — 데스크탑에서 모바일(768px)로 직접 전환 */
     @media (max-width: 768px) {
       .ax-section.intro,
       html.is-embedded .ax-section.intro { height: 625px; min-height: 625px; }
-      .ax-header { top: 32px; width: calc(100% - 64px); gap: 16px; }
+      .ax-header { top: 32px; width: calc(100% - 40px); gap: 16px; }
       .ax-eyebrow { font-size: 14px; }
       .ax-headline-group { gap: 8px; }
       .ax-title { font-size: 32px; line-height: 1.4; }
       .ax-subtitle { font-size: 16px; }
       .mobile-br { display: inline; }
-      .ax-footer { bottom: 32px; width: calc(100% - 64px); font-size: 13px; }
-      .ax-section.problem { padding: 80px 32px; }
+      .ax-footer { bottom: 32px; width: calc(100% - 40px); font-size: 15px; }
+      .ax-footer br.m-only { display: initial; }   /* 모바일: 각 어구마다 줄바꿈 */
+      .ax-section.problem { padding: 80px 20px; }
       /* 모바일: 헤드라인 위 / 카드 4개 2×2 그리드 (15px gap) */
       .problem-grid { gap: 30px; }
       .problem-headline { gap: 24px; }
-      .problem-headline h2 { font-size: 28px; white-space: normal; }
+      .problem-headline h2 { font-size: 28px; font-weight: 500; line-height: 1.4; letter-spacing: -0.015em; white-space: normal; }
+      .problem-headline-body { font-size: 17px; }
       .problem-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
       .problem-card {
         flex: none; min-width: 0; height: auto;
         min-height: 180px; font-size: 18px; padding: 20px;
       }
-      .ax-section.signal { padding: 80px 32px; gap: 40px; }
-      .signal-title { font-size: 28px; }
-      .signal-body { font-size: 15px; }
-      /* 모바일: 2×2 그리드 (15px gap) */
-      .signal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-      .signal-card { flex: none; width: auto; padding: 24px 0; }
-      .signal-card.emphasis { height: auto; min-height: 180px; }
-      .ax-section.solution { padding: 80px 32px; gap: 32px; }
+      /* 섹션 03 Market Signal 모바일 — Figma 13051:29632 */
+      .ax-section.signal {
+        background: transparent;
+        padding: 70px 20px;
+        gap: 30px;
+      }
+      .signal-intro { gap: 5px; }
+      .signal-title { font-size: 28px; line-height: 1.4; letter-spacing: -0.015em; font-weight: 500; }
+      .signal-title br { display: none; }
+      .signal-body { font-size: 17px; }
+      .signal-grid { display: flex; flex-direction: column; gap: 20px; }
+      .signal-card {
+        flex: none;
+        width: 100%;
+        padding: 20px 0 0;
+        gap: 10px;
+        border-top: 1px solid #14191e;
+      }
+      .signal-card.emphasis {
+        height: auto;
+        min-height: 0;
+        padding: 20px 0 0;
+        background: transparent;
+        border-top-width: 3px;
+      }
+      .ax-section.solution { padding: 80px 20px; gap: 32px; }
       .solution-intro { gap: 24px; }
-      .solution-title { font-size: 28px; }
-      .solution-body { font-size: 15px; }
+      .solution-title { font-size: 28px; font-weight: 500; line-height: 1.4; letter-spacing: -0.015em; }
+      .solution-body { font-size: 17px; }
+      .solution-body p { display: inline; }   /* 모바일: 두 단락 합쳐 자연 흐름 */
       /* 모바일: 2×2 그리드 (15px gap) */
-      .solution-grid { grid-template-columns: 1fr 1fr; gap: 15px; }
-      .solution-card { height: auto; min-height: 220px; padding: 20px; gap: 16px; }
+      .solution-grid { grid-template-columns: 1fr; gap: 15px; }
+      .solution-card { height: auto; padding: 20px; gap: 16px; }
       .solution-card-icon { width: 40px; height: 40px; }
       .solution-card h3 { font-size: 16px; }
-      .solution-card p { font-size: 13px; }
-      .ax-section.outcome { padding: 80px 32px; gap: 30px; }
-      .outcome-headline { gap: 24px; }
-      .outcome-headline h2 { font-size: 28px; white-space: normal; }
-      .outcome-pill { font-size: 28px; }
-      .outcome-headline-body { font-size: 15px; }
-      .outcome-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-      /* 모바일 좁은 카드: 가로 분할 → 세로 stack */
-      .outcome-card { min-width: 0; height: auto; min-height: 200px; padding: 20px; flex-direction: column; gap: 12px; }
-      .outcome-card h3 { flex: none; font-size: 18px; }
-      .outcome-card p { flex: none; font-size: 13px; }
+      .solution-card p { font-size: 13px; word-break: keep-all; overflow-wrap: break-word; }
+      /* 모바일: 카드 본문 내 <br> 무시 — 자연스럽게 어절 단위 자동 줄바꿈 */
+      .solution-card p br { display: none; }
+      /* 섹션 05 Outcome 모바일 — Figma 13051:29765 */
+      .ax-section.outcome {
+        background: transparent;
+        padding: 70px 20px;
+        gap: 30px;
+      }
+      .outcome-headline { gap: 5px; }
+      .outcome-headline h2 {
+        font-size: 28px;
+        font-weight: 500;
+        line-height: 1.4;
+        letter-spacing: -0.015em;
+        white-space: normal;
+      }
+      .outcome-headline h2 br { display: none; }   /* 모바일: 강제 줄바꿈 무시 */
+      .outcome-headline-body { font-size: 17px; }
+      .outcome-headline-body p { display: inline; }
+      .outcome-cards { display: grid; grid-template-columns: 1fr; gap: 15px; }
+      /* 모바일 카드: 좌 h3(100px) + 우 p(나머지) 가로 분할 */
+      .outcome-card {
+        min-width: 0;
+        height: auto;
+        padding: 20px;
+        flex-direction: row;
+        gap: 20px;
+        align-items: flex-start;
+      }
+      .outcome-card h3 {
+        flex: 0 0 100px;
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 1.7;
+      }
+      .outcome-card p {
+        flex: 1 1 0;
+        min-width: 0;
+        font-size: 16px;
+        line-height: 1.7;
+      }
       /* 모바일 커리큘럼 — Figma 기준 아코디언 레이아웃 */
-      .ax-section.curriculum { padding: 70px 32px 0; gap: 30px; }
+      .ax-section.curriculum { padding: 70px 20px 0; gap: 30px; }
       .curriculum-head { gap: 5px; }
-      .curriculum-title { font-size: 32px; line-height: 1.4; }
-      .curriculum-meta { font-size: 16px; }
+      .curriculum-title { font-size: 28px; line-height: 1.4; }
+      .curriculum-meta { font-size: 17px; }
       .curriculum-meta .meta-line { display: block; }
       .curriculum-meta .meta-sep { display: none; }
-      .curriculum-disclaimer { font-size: 16px; }
+      .curriculum-disclaimer { font-size: 17px; }
       .curriculum-body { gap: 10px; }
       .curriculum-tabs { flex-direction: column; align-items: stretch; }
       .tab-list { width: 100%; display: flex; flex-direction: column; }
@@ -1651,7 +1726,7 @@
         font-weight: 600;
       }
       .tab-item.active + .tab-item { border-top: none; }
-      .tab-week { width: auto; flex-shrink: 0; }
+      .tab-week { width: 40px; flex-shrink: 0; }   /* detail-label 폭(40)과 동일 → tab-title이 detail-row p와 같은 x 위치에서 시작 */
       .tab-title { flex: 1; }
       /* Chevron 아이콘 (활성: 아래, 비활성: 위) */
       .tab-item::after {
@@ -1672,24 +1747,24 @@
       .detail-row .detail-label + ul li,
       .detail-row .detail-label + p { font-size: 15px; }
       .detail-row ul { padding-left: 22px; margin-left: 0; }
-      .ax-section.tools { padding: 160px 32px 80px; gap: 40px; }
+      .ax-section.tools { padding: 160px 20px 80px; gap: 40px; }
       /* 모바일 폰트 위계 — Figma mo_09 기준 */
-      .tools-title { font-size: 32px; }              /* H4_Title/M */
-      .tools-desc { font-size: 16px; }               /* Body1/R */
+      .tools-title { font-size: 28px; }
+      .tools-desc { font-size: 17px; }
       .tools-group h3 { font-size: 22px; }
       /* 모바일: 모든 카드 2열 그리드, 카드 간격 15px */
       .tools-grid { gap: 15px; }
-      .tools-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+      .tools-row { display: grid; grid-template-columns: 1fr; gap: 15px; }
       .tool-card { flex: none; width: auto; min-width: 0; padding: 20px; }
       .tool-name { font-size: 16px; }                /* Body1/B */
       .tool-card ul li { font-size: 13px; }          /* Label2/R */
       .tool-badge { font-size: 13px; }               /* Label2/SB */
       .tool-icon { width: 50px; height: 50px; }      /* 모바일 아이콘 50px */
-      .ax-section.reference { padding: 80px 32px; gap: 32px; }
-      .reference-title { font-size: 28px; }
-      .reference-desc, .satisfaction-desc { font-size: 15px; }
-      /* 모바일: 2×2 그리드 (15px gap) */
-      .testimonial-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+      .ax-section.reference { padding: 80px 20px; gap: 32px; }
+      .reference-title { font-size: 28px; font-weight: 500; line-height: 1.4; letter-spacing: -0.015em; }
+      .reference-desc, .satisfaction-desc { font-size: 17px; }
+      /* 모바일: 1열 stack */
+      .testimonial-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
       .testimonial-card { flex: none; width: auto; min-height: auto; padding: 20px; gap: 20px; }
       .testimonial-card p { font-size: 14px; }
       .satisfaction-title { font-size: 22px; }
@@ -1699,20 +1774,27 @@
       .score-card:last-child { grid-column: 1 / -1; }
       .score-num { font-size: 44px; }
       .score-unit { font-size: 20px; }
-      .ax-section.benefits { padding: 80px 32px; gap: 32px; }
-      .benefits-title { font-size: 28px; }
-      .benefits-desc { font-size: 15px; }
+      .ax-section.benefits { padding: 80px 20px; gap: 32px; }
+      .benefits-title { font-size: 28px; font-weight: 500; line-height: 1.4; letter-spacing: -0.015em; }
+      .benefits-desc { font-size: 17px; }
       .benefits-row { flex-direction: column; }
-      .benefit-card { flex-direction: column; padding: 28px; min-height: 0; gap: 16px; }
-      .benefit-left { flex: 0 0 auto; width: 100%; }
-      .benefit-left { width: 100%; }
+      .benefit-card {
+        flex: 0 0 auto;            /* 모바일에서 카드 높이가 0으로 무너지지 않도록 */
+        flex-direction: column;
+        padding: 20px;
+        min-height: 0;
+        gap: 16px;
+        width: 100%;
+      }
+      .benefit-left { flex: 0 0 auto; width: 100%; max-width: 100%; }
       .benefit-name { font-size: 20px; }
+      .benefit-desc { flex: 0 0 auto; }
       /* 모바일: 헤더 / step 리스트 세로 stack, step row 내부도 세로 stack */
-      .ax-section.schedule { padding: 80px 32px; }
+      .ax-section.schedule { padding: 80px 20px; }
       .schedule-layout { flex-direction: column; gap: 30px; }
       .schedule-head { gap: 16px; }
-      .schedule-title { font-size: 28px; }
-      .schedule-desc { font-size: 15px; }
+      .schedule-title { font-size: 28px; font-weight: 500; line-height: 1.4; letter-spacing: -0.015em; }
+      .schedule-desc { font-size: 17px; }
       .schedule-steps { gap: 0; }
       .step-card {
         flex-direction: column;
@@ -1723,24 +1805,48 @@
       .step-name { font-size: 20px; }
       .step-body { font-size: 14px; }
       .step-meta-label { width: 32px; }
-      .ax-section.price { padding: 80px 32px; gap: 32px; }
-      .price-title { font-size: 28px; }
+      .ax-section.price { padding: 80px 20px; gap: 32px; }
+      .price-head { gap: 20px; }
+      .price-title { font-size: 28px; font-weight: 500; line-height: 1.4; letter-spacing: -0.015em; }
       .price-desc { font-size: 15px; }
       .price-box { padding: 28px; gap: 16px; }
       .price-value { font-size: 40px; }
       .price-tags { gap: 8px; }
-      .price-tag { font-size: 12px; }
+      .price-tag { font-size: 13px; }
       .price-notes li { font-size: 13px; }
       /* 모바일: 인트로 + 4 카드 1열 stack */
       .ax-section.instructors {
-        padding: 80px 32px;
+        padding: 80px 20px;
         display: grid;
         grid-template-columns: 1fr;       /* 1열 */
         gap: 20px;
         align-items: stretch;
       }
-      .instructor-title { font-size: 28px; }
-      .instructor-desc { font-size: 15px; }
+      .instructor-title { font-size: 28px; font-weight: 500; line-height: 1.4; letter-spacing: -0.015em; }
+      .instructor-desc { font-size: 17px; }
+
+      /* 모바일: 헤드라인 본문 강제 줄바꿈 해제 — 자연스럽게 어절 단위 흐름 */
+      .problem-headline-body br,
+      .signal-body br,
+      .solution-body br,
+      .outcome-headline-body br,
+      .reference-desc br,
+      .satisfaction-desc br,
+      .benefits-desc br,
+      .schedule-desc br,
+      .instructor-desc br,
+      .tools-desc br,
+      .curriculum-meta br,
+      .curriculum-disclaimer br,
+      .price-desc br { display: none; }
+      .problem-headline-body p,
+      .signal-body p,
+      .solution-body p,
+      .outcome-headline-body p,
+      .benefits-desc p,
+      .schedule-desc p,
+      .instructor-desc p,
+      .tools-desc p { display: inline; }
       .instructor-row { display: contents; }
       .instructor-intro { width: 100%; gap: 16px; padding-bottom: 17px; }
       .instructor-card { flex: none; width: 100%; max-width: 100%; }
@@ -1751,11 +1857,32 @@
       .instructor-info { width: 100%; padding: 20px 30px 35px; gap: 20px; }
       .instructor-position, .instructor-bio { font-size: 15px; }
       .instructor-disclaimer { font-size: 15px; }
-      .ax-section.faq { padding: 80px 32px; gap: 40px; }
+      .ax-section.faq { padding: 80px 20px; gap: 40px; }
       .faq-section-title { font-size: 22px; }
       .faq-q { font-size: 15px; }
       .faq-a li, .notice-block ul li, .notice-contact { font-size: 14px; }
       .notice-block-title { font-size: 18px; }
+
+      /* 모바일: 모든 카드 radius 18px로 통일 */
+      .problem-card,
+      .solution-card,
+      .outcome-card,
+      .tool-card,
+      .testimonial-card,
+      .score-card,
+      .benefit-card,
+      .price-box,
+      .instructor-card {
+        border-radius: 18px;
+      }
+      .instructor-img {
+        border-top-left-radius: 18px;
+        border-top-right-radius: 18px;
+      }
+      .instructor-info {
+        border-bottom-left-radius: 18px;
+        border-bottom-right-radius: 18px;
+      }
     }
   </style>
 </head>
@@ -1770,8 +1897,8 @@
     <div class="ax-intro-hint" id="introHint">Press the keycap</div>
 
     <footer class="ax-footer">
-      <p class="ax-subtitle">6월 2일 개강 · 선착순 50명</p>
-      <p>콘텐츠 제작부터 운영 자동화까지<br>반복 업무는 줄이고 성과는 키웁니다</p>
+      <p class="ax-subtitle">6월 2일 개강 · <br class="m-only">선착순 50명</p>
+      <p>콘텐츠 제작부터 <br class="m-only">운영 자동화까지<br>반복 업무는 줄이고 <br class="m-only">성과는 키웁니다</p>
     </footer>
   </section>
 
@@ -1807,26 +1934,25 @@
       <h2 class="signal-title">이미 시장은 AI를 쓰는 마케터에서<br>AI로 일하는 마케터로 넘어가고 있습니다.</h2>
       <div class="signal-body">
         <p>이제 중요한 건 AI 툴을 한 번 써보는 경험이 아닙니다.</p>
-        <p>실무 흐름에 AI를 연결해 더 빠르게 실행하고, 더 정교하게 성과를 만드는 방식입니다.</p>
-        <p>이미 많은 마케터가 AI를 씁니다. 성과 차이는 실무 흐름 안에 AI를 얼마나 제대로 연결했는지에서 벌어집니다.</p>
+        <p>성과 차이는 실무 흐름 안에 AI를 얼마나 제대로 연결했는지에서 벌어집니다.</p>
       </div>
     </div>
 
     <div class="signal-grid">
       <article class="signal-card">
-        <h3>마케터의 AX 역량은<br>이미 기본값</h3>
-        <p>마케터의 80%는 콘텐츠 제작에 AI를 사용하고, 75%는 미디어 제작에 AI를 활용합니다. 차이는 연결 방식에서 벌어집니다.</p>
+        <h3>마케터의 AX 역량은 이미 기본값</h3>
+        <p>마케터의 80% 이상이 업무 전반에 AI를 활용하고 있으며, 콘텐츠 및 미디어 제작에도 적극적으로 AI를 도입하고 있습니다.</p>
       </article>
       <article class="signal-card">
-        <h3>문제는 툴 도입이 아닌<br>AX 실행</h3>
+        <h3>문제는 툴 도입이 아닌 AX 실행</h3>
         <p>마케터의 78%가 필요한 수준의 개인화 콘텐츠를 충분히 만들지 못하고 있다고 말합니다.</p>
       </article>
       <article class="signal-card">
-        <h3>업무 생산성 자체를 바꾸는<br>AI 기술</h3>
-        <p>McKinsey는 AI가 마케팅 생산성을 마케팅 지출의 15% 수준까지 높일 수 있다고 분석했습니다.</p>
+        <h3>업무 생산성 자체를 바꾸는 AI 기술</h3>
+        <p>McKinsey는 AI가 마케팅 조직의 업무 효율과 속도를 높이는 핵심 기술이 되고 있다고 분석했습니다.</p>
       </article>
       <article class="signal-card emphasis">
-        <h3><span class="highlight">하지만</span> ‘도구’로 쓰는 수준에<br>머무는 경우가 대다수</h3>
+        <h3><span class="highlight">하지만</span> ‘도구’로 쓰는 수준에 머무는 경우가 대다수</h3>
         <p>76%의 조직이 AI로 속도 개선을 경험했지만, 데이터 품질이 충분하다고 답한 조직은 44%에 그쳤습니다.</p>
       </article>
     </div>
@@ -1836,9 +1962,8 @@
     <div class="solution-intro">
       <h2 class="solution-title">마케터를 위한 AX 챌린지는<br>AI를 실무에 붙여 성과로 연결하는 방식을 배웁니다.</h2>
       <div class="solution-body">
-        <p>숏폼 콘텐츠 제작, 멀티채널 리퍼포징, SEO 최적화, 운영 자동화, AX 포트폴리오까지</p>
+        <p>숏폼 콘텐츠 제작, 멀티채널 리퍼포징, SEO 최적화, 운영 자동화까지</p>
         <p>마케터의 실제 업무 흐름을 따라가며 반복 업무는 줄이고 실행력은 높이는 4주 실전 챌린지입니다.</p>
-        <p>배우고 끝나는 교육이 아니라 실무에 바로 적용할 방식과 결과물, 그리고 커리어에 활용할 포트폴리오까지 만드는 챌린지입니다.</p>
       </div>
     </div>
 
@@ -1875,8 +2000,8 @@
           <svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4V5z"/><circle cx="9" cy="10.5" r="0.8" fill="#000" stroke="none"/><circle cx="12" cy="10.5" r="0.8" fill="#000" stroke="none"/><circle cx="15" cy="10.5" r="0.8" fill="#000" stroke="none"/></svg>
         </div>
         <div class="solution-card-text">
-          <h3>포트폴리오가 되는 결과물</h3>
-          <p>AI 콘텐츠 결과물, Before / After 비교 문서, 자동화 설계서,<br>AX 포트폴리오 초안까지 실제 나만의 산출물로 이어집니다.</p>
+          <h3>실무에 바로 쓰는 결과물</h3>
+          <p>AI 콘텐츠 결과물, 성과 정리 문서 등 팀에 공유하거나 업무에 바로 적용할 수 있는 형태로 정리합니다.</p>
         </div>
       </article>
     </div>
@@ -1885,8 +2010,7 @@
   <section class="ax-section outcome">
     <div class="outcome-headline">
       <div class="outcome-headline-top">
-        <span class="outcome-pill">4주 후</span>
-        <h2>AI를 써보는 마케터가 아니라<br>AI로 일하는 마케터가 됩니다.</h2>
+        <h2>4주 후, <br>AI를 써보는 마케터가 아니라 <br>AI로 일하는 마케터가 됩니다.</h2>
       </div>
       <div class="outcome-headline-body">
         <p>반복 업무에 쫓기던 일상에서 벗어나, 콘텐츠를 만들고 확장하고 운영하는</p>
@@ -1895,19 +2019,19 @@
     </div>
     <div class="outcome-cards">
       <article class="outcome-card">
-        <h3>AI를 활용하는<br>나만의 기준 형성</h3>
+        <h3>AI를 활용하는 나만의 기준 형성</h3>
         <p>내 업무 흐름 안에서 어디에 AI를 연결해야 효과가 나는지 판단하는 기준이 생깁니다.</p>
       </article>
       <article class="outcome-card">
-        <h3>일하는 속도와<br>구조가 함께<br>달라지는 경험</h3>
+        <h3>일하는 속도와 구조가 함께 달라지는 경험</h3>
         <p>그때그때 버티듯 일하는 방식에서 벗어나, 더 적게 반복하고 더 빠르게 실행하는 흐름을 만듭니다.</p>
       </article>
       <article class="outcome-card">
-        <h3>내 업무 역량을 보여줄<br>진짜 포트폴리오</h3>
+        <h3>내 업무 역량을 보여줄 진짜 포트폴리오</h3>
         <p>수강 과정에서 만든 산출물을 바탕으로 취업·이직이나 내부 평가에도 활용할 수 있는 AX 포트폴리오를 정리합니다.</p>
       </article>
       <article class="outcome-card">
-        <h3>끌려가는 사람에서<br>주도하는 사람으로</h3>
+        <h3>끌려가는 사람에서 주도하는 사람으로</h3>
         <p>초안 작성, 소재 정리, 채널별 변환 등 반복 업무를 줄이고 더 중요한 기획과 판단에 집중하는 AX 역량이 생깁니다.</p>
       </article>
     </div>
@@ -2184,10 +2308,9 @@
   </section>
 
   <section class="ax-section benefits">
-    <h2 class="benefits-title">배우는 순간보다, 끝난 뒤가 더 기대되는<br>AX 챌린저만의 혜택</h2>
+    <h2 class="benefits-title">배우는 순간보다,<br>적용하는 순간이 더 기대되는 AX 챌린저 혜택</h2>
     <div class="benefits-desc">
-      <p>현직자 멘토링으로 다듬고, 밋업으로 연결되고, 커리어 기회로 이어집니다.</p>
-      <p>수강이 끝난 뒤에도 더 잘 일하고 더 멀리 갈 수 있도록 현직자에게 점검받고, 같은 방향의 사람들과 연결되며, 다음 기회까지 준비할 수 있습니다.</p>
+      <p>현직자와 함께 점검하고, 밋업으로 연결되고, 수강 후에도 바로 활용할 수 있는 실무 자료로 이어집니다.</p>
     </div>
 
     <div class="benefits-grid">
@@ -2195,32 +2318,32 @@
         <article class="benefit-card">
           <div class="benefit-left">
             <p class="benefit-label">Benefit 1</p>
-            <h3 class="benefit-name">현직자 피드백<br>멘토링</h3>
+            <h3 class="benefit-name">현직자 멘토링</h3>
           </div>
-          <p class="benefit-desc">내가 만든 콘텐츠, 자동화 아이디어, 포트폴리오를 현직자 관점에서 점검받을 수 있습니다. 10년차 이상 현업 마케터가 실무 기준으로 직접 짚어드립니다.</p>
+          <p class="benefit-desc">내가 만든 콘텐츠, 자동화 아이디어, 업무 적용 결과물을 현직자 관점에서 점검받을 수 있습니다. 10년차 이상 현업 마케터가 실무 보완 포인트와 더 키워야 할 역량을 짚어드립니다.</p>
         </article>
         <article class="benefit-card">
           <div class="benefit-left">
             <p class="benefit-label">Benefit 2</p>
-            <h3 class="benefit-name">AX 챌린저<br>오프라인 밋업</h3>
+            <h3 class="benefit-name">오프라인 밋업</h3>
           </div>
-          <p class="benefit-desc">수료 후 AX 챌린저들과 직접 만나 서로의 실무 경험과 인사이트를 나눌 수 있습니다. 네트워킹을 통해 다음 커리어 확장으로 이어질 기회를 잡으세요.</p>
+          <p class="benefit-desc">수료 후 AX 챌린저들과 직접 만나 서로의 실무 경험과 인사이트를 나눌 수 있습니다. 네트워킹을 통해 각자의 업무 방식과 실무 시야를 확장할 수 있습니다.</p>
         </article>
       </div>
       <div class="benefits-row">
         <article class="benefit-card">
           <div class="benefit-left">
             <p class="benefit-label">Benefit 3</p>
-            <h3 class="benefit-name">AX 포지션 추천</h3>
+            <h3 class="benefit-name">실무 자료 제공</h3>
           </div>
-          <p class="benefit-desc">내 이력과 활동 데이터를 바탕으로, 나에게 맞는 AX 포지션을 더 빠르게 추천받을 수 있습니다.</p>
+          <p class="benefit-desc">실무에 바로 활용할 수 있는 프롬프트 예시 가이드를 제공합니다. 수강 후에도 내 업무에 반복 적용하고 확장할 수 있도록 돕습니다.</p>
         </article>
         <article class="benefit-card">
           <div class="benefit-left">
             <p class="benefit-label">Benefit 4</p>
-            <h3 class="benefit-name">실무 프롬프트<br>가이드 제공</h3>
+            <h3 class="benefit-name">커뮤니티 연결</h3>
           </div>
-          <p class="benefit-desc">실무에 바로 적용할 수 있는 프롬프트 자료를 통해, 반복적인 업무를 더 가볍게 처리할 수 있습니다.</p>
+          <p class="benefit-desc">교육이 끝난 뒤에도 더 잘 일하고 더 멀리 갈 수 있도록. 최신 트렌드와 실무 인사이트, 포지션 추천까지 함께 나눕니다.</p>
         </article>
       </div>
     </div>
@@ -2229,7 +2352,7 @@
   <section class="ax-section price">
     <header class="price-head">
       <h2 class="price-title">마케터의 일하는 방식을 바꾸는<br>4주 AX 챌린지</h2>
-      <p class="price-desc">내 실무에 바로 적용할 방식은 물론, 팀 안에서 함께 실행할 기준까지 가져갈 수 있습니다.</p>
+      <p class="price-desc">내 실무에 바로 적용할 방식은 물론, 팀 안에서 함께 실행할 기준까지 가져갈 수 있습니다.<br>혼자 시작해도 좋고, 팀 단위로 함께 AX 전환을 시작해도 좋습니다.</p>
     </header>
 
     <div class="price-box">
@@ -2240,6 +2363,7 @@
       <div class="price-tags">
         <span class="price-tag">5월 26일까지</span>
         <span class="price-tag">50명 한정 모집</span>
+        <span class="price-tag">1기 오픈 혜택가</span>
         <span class="price-tag">법인카드 결제 가능</span>
         <span class="price-tag">팀 단위 참여 가능</span>
       </div>
@@ -2731,6 +2855,35 @@
     // 초기 + 리사이즈 시 레이아웃 재배치
     arrangeCurriculum();
     window.addEventListener('resize', arrangeCurriculum);
+
+    /* ── 스크롤 진입 시 fade-in 인터랙션 ─────────────────────
+       인트로 제외 모든 섹션의 직속 자식을 reveal 대상으로 등록 */
+    (function setupScrollReveal() {
+      if (!('IntersectionObserver' in window)) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      const targets = [];
+      document.querySelectorAll('.ax-section:not(.intro)').forEach(section => {
+        section.querySelectorAll(':scope > *').forEach(el => targets.push(el));
+      });
+      // 이미 뷰포트 안에 있는 요소(최상단 섹션)는 즉시 visible 처리하지 않고,
+      // IntersectionObserver 첫 콜백에서 자연스럽게 처리되도록 둠.
+      targets.forEach(el => el.classList.add('reveal'));
+
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            io.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -8% 0px'   /* 살짝 일찍 트리거 */
+      });
+
+      targets.forEach(el => io.observe(el));
+    })();
   </script>
 
   <script type="module">
@@ -2805,19 +2958,22 @@
     });
     window.addEventListener('blur', resetToCenter);   // 다른 창으로 포커스 이동
 
-    // ── 클릭 시 키캡 누르는 모션 + 텍스트 토글 + 다음 섹션 스크롤 ──────
-    //   인트로: 1번째 클릭 = 텍스트 FRONTIERS로 변경, 2번째 이후 = 다음 섹션
-    //   인트로 밖: 매 클릭마다 다음 섹션으로 스크롤
+    // ── 클릭 시 키캡 누르는 모션 + 텍스트 토글 (스크롤 효과 제거됨) ──
     let pressYScale  = 1;     // 현재 Y 스케일
     let pressYTarget = 1;     // 목표 Y 스케일
     let pressTimer = null;
-    let introTextSwitched = false;
 
     const introHintEl = document.getElementById('introHint');
     function hideIntroHint() {
       if (introHintEl) introHintEl.classList.add('is-hidden');
     }
 
+    // 스크롤이 인트로 영역 10% 이상 내려가면 안내 숨김
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > window.innerHeight * 0.1) hideIntroHint();
+    }, { passive: true });
+
+    // 다음 섹션으로 부드럽게 스크롤
     function scrollToNextSection() {
       const sections = Array.from(document.querySelectorAll('.ax-section'));
       const scroll = window.scrollY;
@@ -2827,10 +2983,15 @@
       }
     }
 
-    // 스크롤이 인트로 영역 10% 이상 내려가면 안내 숨김
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > window.innerHeight * 0.1) hideIntroHint();
-    }, { passive: true });
+    // 더블클릭 → 다음 섹션으로 스크롤
+    window.addEventListener('dblclick', (e) => {
+      const target = e.target;
+      if (target && target.closest &&
+          target.closest('button, a, input, textarea, select, label, [role="tab"], [role="button"]')) {
+        return;
+      }
+      scrollToNextSection();
+    });
 
     window.addEventListener('mousedown', (e) => {
       // 좌클릭만 처리 — 우클릭/휠클릭은 무시
@@ -2851,24 +3012,7 @@
       // 첫 클릭부터 안내 UI 숨김
       hideIntroHint();
 
-      const viewportH = window.innerHeight;
-      const scroll = window.scrollY;
-      const inIntro = scroll < viewportH * 0.5;
-
-      if (inIntro) {
-        // 인트로 1번째 클릭 → 텍스트 FRONTIERS로 변경 (스크롤 X)
-        // 인트로 2번째+ 클릭 → 다음 섹션으로 스크롤
-        if (!introTextSwitched) {
-          textState = 1;
-          setBackgroundText(TEXT_STATES[textState]);
-          introTextSwitched = true;
-        } else {
-          scrollToNextSection();
-        }
-        return;
-      }
-
-      // 섹션 2(problem) 진입 이후 → 클릭마다 MARKETING ↔ FRONTIERS 토글 (스크롤 X)
+      // 모든 클릭에서 MARKETING ↔ FRONTIERS 토글만 수행
       textState = (textState + 1) % TEXT_STATES.length;
       setBackgroundText(TEXT_STATES[textState]);
     });
@@ -3116,6 +3260,7 @@
       RADIUS = maxDim * 2.4;
       modelMaxDim = maxDim;
       placeCamera();
+      resizeTextPlane();
       updateEmbedShift();   // 카메라 위치 확정 후 임베드 shift 재계산
 
       // dispSource를 pivot의 자식 + 키캡 밑면에 가로로 붙임
