@@ -244,7 +244,7 @@
       min-width: 0;
       min-height: 250px;            /* Figma h-[250px] (콘텐츠 길어지면 늘어남) */
       /* 기본 상태: frost 효과 OFF, f8f8f8 20% 컬러만 적용 (호버 시 frost 강화) */
-      background: rgba(248, 248, 248, 0.5);
+      background: rgba(248, 248, 248, 0.2);
       border: 1px solid transparent;
       color: #14191e;
       border-radius: 24px;
@@ -388,7 +388,7 @@
       min-width: 0;
       height: 250px;
       /* 기본 상태: frost OFF, f8f8f8 20% 컬러만 (호버 시 frost 강화) */
-      background: rgba(248, 248, 248, 0.5);
+      background: rgba(248, 248, 248, 0.2);
       border: 1px solid transparent;
       color: #000;
       border-radius: 24px;
@@ -483,7 +483,7 @@
       min-width: 0;
       height: 200px;
       /* 기본 상태: frost OFF, f8f8f8 20% 컬러만 (호버 시 frost 강화) */
-      background: rgba(248, 248, 248, 0.5);
+      background: rgba(248, 248, 248, 0.2);
       border: 1px solid transparent;
       border-radius: 24px;
       padding: 25px;
@@ -1219,7 +1219,7 @@
       width: 100%;
       max-width: 1100px;
       /* 기본 상태: frost OFF, f8f8f8 20% 컬러만 (호버 시 frost 강화) */
-      background: rgba(248, 248, 248, 0.5);
+      background: rgba(248, 248, 248, 0.2);
       border: 1px solid transparent;
       color: #14191e;
       border-radius: 24px;
@@ -1386,7 +1386,7 @@
     .instructor-info {
       width: 340px;
       /* 기본 상태: frost OFF, f8f8f8 20% 컬러만 (호버 시 frost 강화) */
-      background: rgba(248, 248, 248, 0.5);
+      background: rgba(248, 248, 248, 0.2);
       border: 1px solid transparent;
       border-top: none;                   /* 위는 이미지와 연결되므로 border 제거 */
       border-bottom-left-radius: 24px;
@@ -1545,6 +1545,7 @@
       .outcome-card,
       .price-box {
         transition: transform 0.4s ease,
+                    background-color 0.4s ease,
                     backdrop-filter 0.4s ease,
                     -webkit-backdrop-filter 0.4s ease,
                     border-color 0.4s ease,
@@ -1552,7 +1553,8 @@
       }
       .instructor-card { transition: transform 0.4s ease; }
       .instructor-info {
-        transition: backdrop-filter 0.4s ease,
+        transition: background-color 0.4s ease,
+                    backdrop-filter 0.4s ease,
                     -webkit-backdrop-filter 0.4s ease,
                     border-color 0.4s ease,
                     box-shadow 0.4s ease;
@@ -1565,12 +1567,13 @@
       .instructor-card.is-focused {
         transform: translateY(-6px);
       }
-      /* 뷰포트 중앙 진입 시 frost + glass 두께 */
+      /* 뷰포트 중앙 진입 시 background 강화 + frost + glass 두께 */
       .problem-card.is-focused,
       .solution-card.is-focused,
       .outcome-card.is-focused,
       .price-box.is-focused,
       .instructor-card.is-focused .instructor-info {
+        background: rgba(248, 248, 248, 0.5);
         backdrop-filter: blur(24px) saturate(180%);
         -webkit-backdrop-filter: blur(24px) saturate(180%);
         border-color: rgba(255, 255, 255, 0.25);
@@ -1583,12 +1586,13 @@
 
     /* Glass frost 카드 hover lift + frost 강화 — 마우스 환경(데스크톱)에서만 */
     @media (hover: hover) {
-      /* 카드 자체: transform + (해당되는 경우) backdrop-filter 트랜지션 */
+      /* 카드 자체: transform + background + (해당되는 경우) backdrop-filter 트랜지션 */
       .problem-card,
       .solution-card,
       .outcome-card,
       .price-box {
         transition: transform 0.3s ease,
+                    background-color 0.3s ease,
                     backdrop-filter 0.3s ease,
                     -webkit-backdrop-filter 0.3s ease,
                     border-color 0.3s ease,
@@ -1596,7 +1600,8 @@
       }
       .instructor-card { transition: transform 0.3s ease; }
       .instructor-info {
-        transition: backdrop-filter 0.3s ease,
+        transition: background-color 0.3s ease,
+                    backdrop-filter 0.3s ease,
                     -webkit-backdrop-filter 0.3s ease,
                     border-color 0.3s ease,
                     box-shadow 0.3s ease;
@@ -1609,12 +1614,13 @@
       .instructor-card:hover {
         transform: translateY(-10px);
       }
-      /* 호버 시 frost 강도 + glass 두께(border·inset shadow) 활성화 */
+      /* 호버 시 background 강화 + frost + glass 두께(border·inset shadow) 활성화 */
       .problem-card:hover,
       .solution-card:hover,
       .outcome-card:hover,
       .price-box:hover,
       .instructor-card:hover .instructor-info {
+        background: rgba(248, 248, 248, 0.5);
         backdrop-filter: blur(24px) saturate(180%);
         -webkit-backdrop-filter: blur(24px) saturate(180%);
         border-color: rgba(255, 255, 255, 0.25);
