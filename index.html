@@ -5,19 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AX · 00 Intro</title>
 
-  <!-- 외부 호스트 DNS 미리 조회 (TLS 핸드셰이크 단축) -->
-  <link rel="dns-prefetch" href="https://dl.polyhaven.org">
-  <link rel="dns-prefetch" href="https://esm.sh">
-  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
-  <link rel="preconnect"   href="https://dl.polyhaven.org" crossorigin>
-  <link rel="preconnect"   href="https://esm.sh" crossorigin>
+  <!-- 외부 호스트 preconnect — TLS handshake 단축 (HDRI는 비중요로 변경, JS·폰트만 우선) -->
+  <link rel="preconnect" href="https://esm.sh" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 
-  <!-- 핵심 자산 미리 로드 (HTML 파싱과 동시에 fetch 시작) -->
-  <link rel="preload" as="fetch" href="keycap_ax.glb" crossorigin="anonymous">
-  <link rel="preload" as="fetch" href="https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_09_1k.hdr" crossorigin="anonymous">
-  <link rel="preload" as="image" href="text_marketing.svg">
+  <!-- 핵심 자산: 인트로 렌더에 필수 -->
+  <link rel="preload" as="fetch" href="keycap_ax.glb" crossorigin="anonymous" fetchpriority="high">
+  <link rel="preload" as="image" href="text_marketing.svg" fetchpriority="high">
+  <!-- HDRI는 키캡 반사용. 인트로 첫 페인트 후 로드되도록 preload 제거 (시각적 영향 최소) -->
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/wanteddev/wanted-sans@v1.0.4/packages/wanted-sans/fonts/webfonts/variable/complete/WantedSansVariable.min.css">
+  <!-- Three.js 모듈 병렬 다운로드 (HTML 파싱 단계에서 fetch 시작) -->
+  <link rel="modulepreload" href="https://esm.sh/three@0.166.0">
+  <link rel="modulepreload" href="https://esm.sh/three@0.166.0/examples/jsm/loaders/GLTFLoader">
+  <link rel="modulepreload" href="https://esm.sh/three@0.166.0/examples/jsm/loaders/RGBELoader">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/wanteddev/wanted-sans@v1.0.4/packages/wanted-sans/fonts/webfonts/variable/complete/WantedSansVariable.min.css" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/wanteddev/wanted-sans@v1.0.4/packages/wanted-sans/fonts/webfonts/variable/complete/WantedSansVariable.min.css"></noscript>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body {
@@ -471,7 +474,7 @@
       letter-spacing: -0.01em;
       color: #333;                  /* Figma gy-09 */
     }
-    .outcome-headline-body p { margin: 0; }
+    .outcome-headline-body p { margin: 0; display: inline; }   /* 강제 줄바꿈 해제 — 자연 흐름 */
     .outcome-cards {
       display: grid;
       grid-template-columns: 1fr 1fr;   /* 2×2 그리드 */
@@ -1693,7 +1696,11 @@
       .signal-title { font-size: 28px; line-height: 1.5; letter-spacing: -0.015em; font-weight: 500; }
       .signal-title br { display: none; }
       .signal-card h3 br { display: none; }
+      /* 모바일 전용 강제 줄바꿈은 살림 */
+      .signal-title br.mobile-br,
+      .signal-card h3 br.mobile-br { display: inline; }
       .signal-body { font-size: 16px; font-weight: 400; line-height: 1.7; letter-spacing: -0.01em; }   /* Figma Body1/R */
+      .signal-card h3 { font-size: 16px; font-weight: 600; line-height: 1.7; letter-spacing: -0.01em; }   /* Figma Body3/SB */
       .signal-grid { display: flex; flex-direction: column; gap: 20px; }
       .signal-card {
         flex: none;
@@ -1752,7 +1759,7 @@
         letter-spacing: -0.015em;
         white-space: normal;
       }
-      .outcome-headline h2 br { display: none; }   /* 모바일: 강제 줄바꿈 무시 */
+      /* 모바일: outcome h2 강제 줄바꿈 유지 (3줄 노출) */
       .outcome-headline-body { font-size: 15px; font-weight: 400; line-height: 1.7; letter-spacing: -0.01em; }   /* Figma Label1/R */
       .outcome-headline-body p { display: inline; }
       .outcome-cards { display: grid; grid-template-columns: 1fr; gap: 15px; }
@@ -1835,35 +1842,174 @@
       .detail-row .detail-label + ul li,
       .detail-row .detail-label + p { font-size: 15px; }
       .detail-row ul { padding-left: 22px; margin-left: 0; }
-      .ax-section.tools { padding: 40px 20px 80px; gap: 30px; }   /* prev same, next reference 다름=160 */
-      /* 모바일 폰트 위계 — Figma mo_09 기준 */
-      .tools-title { font-size: 28px; }
-      .tools-desc { font-size: 17px; }
-      .tools-group h3 { font-size: 22px; }
-      /* 모바일: 모든 카드 2열 그리드, 카드 간격 15px */
-      .tools-grid { gap: 15px; }
-      .tools-row { display: grid; grid-template-columns: 1fr; gap: 15px; }
-      .tool-card { flex: none; width: auto; min-width: 0; padding: 20px; }
-      .tool-name { font-size: 16px; }                /* Body1/B */
-      .tool-card ul li { font-size: 13px; }          /* Label2/R */
-      .tool-badge { font-size: 13px; }               /* Label2/SB */
-      .tool-icon { width: 50px; height: 50px; }      /* 모바일 아이콘 50px */
-      .ax-section.reference { padding: 80px 20px 40px; gap: 32px; }   /* prev tools 다름=160, next benefits 같음=40 */
-      .reference-group { gap: 30px; }
-      .satisfaction { gap: 30px; }
-      .reference-title { font-size: 28px; font-weight: 500; line-height: 1.4; letter-spacing: -0.015em; }
-      .reference-desc, .satisfaction-desc { font-size: 17px; }
-      /* 모바일: 1열 stack */
-      .testimonial-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
-      .testimonial-card { flex: none; width: auto; min-height: auto; padding: 20px; gap: 20px; }
-      .testimonial-card p { font-size: 15px; }
-      .satisfaction-title { font-size: 22px; }
-      /* 모바일: 만족도·추천 의향 2열 / AX 역량 성장 체감은 두 컬럼 가득 */
-      .satisfaction-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-      .score-card { flex: none; width: auto; padding: 20px; }
-      .score-card:last-child { grid-column: 1 / -1; }
-      .score-num { font-size: 44px; }
-      .score-unit { font-size: 20px; }
+      /* 섹션 07 Tools 모바일 — Figma 13077:16015 (캐러셀 디자인) */
+      .ax-section.tools {
+        background: #f8f8f8;            /* Figma gy-01 */
+        padding: 40px 20px 80px;        /* prev same, next reference 다름=160 */
+        gap: 30px;
+        align-items: stretch;            /* 캐러셀이 가로 폭 100% 차지 */
+      }
+      .tools-head { gap: 5px; width: 100%; }
+      .tools-title { font-size: 28px; font-weight: 500; line-height: 1.5; letter-spacing: -0.015em; }
+      .tools-desc { font-size: 16px; font-weight: 400; line-height: 1.7; letter-spacing: -0.01em; }
+      .tools-group {
+        gap: 10px;
+        width: 100%;
+      }
+      .tools-group h3 {
+        font-size: 20px;                /* Figma P_Headline1/SB */
+        font-weight: 600;
+        line-height: 1.5;
+        letter-spacing: -0.01em;
+      }
+      /* 캐러셀: tools-grid → 가로 스크롤, tools-row → display:contents 로 평탄화 */
+      .tools-grid {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        /* edge-bleed: 캔버스 가장자리까지 확장하여 마지막 카드까지 스크롤 */
+        margin: 0 -20px;
+        padding: 0 20px;
+        width: calc(100% + 40px);
+      }
+      .tools-grid::-webkit-scrollbar { display: none; }
+      .tools-row { display: contents; }
+      /* 카드: 300px 고정 너비, flex column (body 영역이 남은 공간 차지) */
+      .tool-card {
+        flex: 0 0 300px;
+        width: 300px;
+        padding: 20px;
+        border-radius: 18px;
+        background: #fff;
+        gap: 5px;
+        display: flex;
+        flex-direction: column;
+      }
+      .tool-card-head { width: 100%; }
+      .tool-icon {
+        width: 60px;                    /* Figma size-[60px] */
+        height: 60px;
+        border-radius: 12px;
+      }
+      .tool-badge {
+        font-size: 13px;                /* Figma Label2/SB */
+        font-weight: 600;
+        padding: 4px 8px;
+        border-radius: 8px;
+      }
+      /* body가 남은 vertical 공간 차지 → 가격 라인을 하단에 고정 가능하도록 */
+      .tool-body {
+        gap: 5px;
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+      }
+      .tool-name {
+        font-size: 18px;                /* Figma P_Headline2/B */
+        font-weight: 700;
+        line-height: 1.5;
+        letter-spacing: -0.01em;
+      }
+      .tool-card ul {
+        list-style: none;
+        padding-left: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        flex: 1 1 auto;
+      }
+      .tool-card ul li {
+        font-size: 16px;                /* Figma Body3/R */
+        font-weight: 400;
+        line-height: 1.7;
+        letter-spacing: -0.01em;
+        margin: 0;
+      }
+      /* 가격 라인(마지막 li)을 카드 하단에 고정 — 단, 단독 li 카드(무료 툴)는 제외 */
+      .tool-card ul li:last-child:not(:only-child) {
+        margin-top: auto;
+      }
+      /* 섹션 08 Reference 모바일 — Figma 13077:16371 (캐러셀 디자인) */
+      .ax-section.reference {
+        padding: 80px 20px 40px;       /* prev tools 다름=160, next benefits 같음=40 */
+        gap: 40px;                     /* Figma: reference-group ↔ satisfaction */
+        align-items: stretch;
+      }
+      .reference-group { gap: 30px; }   /* head ↔ testimonial-block */
+      .reference-block { gap: 10px; }   /* testimonial-grid ↔ disclaimer */
+      .satisfaction { gap: 10px; }      /* satisfaction-head ↔ cards */
+      .satisfaction-head { gap: 5px; }
+      .reference-title { font-size: 28px; font-weight: 500; line-height: 1.5; letter-spacing: -0.015em; }
+      .reference-desc, .satisfaction-desc { font-size: 16px; }
+      .satisfaction-title { font-size: 20px; font-weight: 600; line-height: 1.5; letter-spacing: -0.01em; }
+      .reference-disclaimer { font-size: 13px; line-height: 1; letter-spacing: 0; }
+
+      /* 후기 카드 캐러셀 */
+      .testimonial-grid {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        margin: 0 -20px;
+        padding: 0 20px;
+        width: calc(100% + 40px);
+      }
+      .testimonial-grid::-webkit-scrollbar { display: none; }
+      .testimonial-card {
+        flex: 0 0 300px;
+        width: 300px;
+        padding: 20px;
+        border-radius: 18px;
+        gap: 5px;
+        min-height: auto;
+        justify-content: flex-start;
+      }
+      .testimonial-card p { font-size: 16px; }
+      .testimonial-author { font-size: 16px; gap: 10px; margin-top: auto; }   /* 카드 하단 고정 */
+
+      /* 만족도 카드 캐러셀 — label을 카드 안으로 (score-card-group이 visual card 역할) */
+      .satisfaction-cards {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        margin: 0 -20px;
+        padding: 0 20px;
+        width: calc(100% + 40px);
+      }
+      .satisfaction-cards::-webkit-scrollbar { display: none; }
+      .score-card-group {
+        flex: 0 0 300px;
+        width: 300px;
+        padding: 30px;
+        border: 1px solid #ececec;
+        border-radius: 24px;
+        background: #fff;
+        align-items: center;
+        gap: 0;
+      }
+      .score-card {
+        flex: none;
+        width: auto;
+        background: transparent;
+        border: none;
+        padding: 0;
+        align-items: center;
+      }
+      .score-card:last-child { grid-column: auto; }
+      .score-num { font-size: 64px; }
+      .score-unit { font-size: 30px; }
       .ax-section.benefits { padding: 40px 20px; gap: 30px; }   /* same-bg both sides */
       .benefits-title { font-size: 28px; font-weight: 500; line-height: 1.4; letter-spacing: -0.015em; }
       .benefits-desc { font-size: 17px; }
@@ -1944,13 +2090,13 @@
       .price-tags { gap: 8px; }
       .price-tag { font-size: 13px; }
       .price-notes li { font-size: 13px; }
-      /* 모바일: 인트로 + 4 카드 1열 stack */
+      /* 섹션 12 Instructors 모바일 — Figma 13077:16551 (강사 카드 + 멘토 캐러셀) */
       .ax-section.instructors {
         padding: 40px 20px 80px;          /* prev same, next faq 다름=160 */
-        display: grid;
-        grid-template-columns: 1fr;       /* 1열 */
-        gap: 15px;
-        align-items: stretch;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;                        /* Figma: title ↔ lead-card ↔ mentor-section */
+        align-items: flex-start;
       }
       .instructor-title { font-size: 28px; font-weight: 500; line-height: 1.4; letter-spacing: -0.015em; }
       .instructor-desc { font-size: 17px; }
@@ -1977,16 +2123,70 @@
       .schedule-desc p,
       .instructor-desc p,
       .tools-desc p { display: inline; }
-      .instructor-row { display: contents; }
+      /* row 1 (intro + lead card): flatten — 자식들이 섹션 직속 children 처럼 */
+      .instructor-row:has(.instructor-intro) { display: contents; }
+      /* row 2 (멘토 3카드): 가로 스크롤 캐러셀 */
+      .instructor-row:not(:has(.instructor-intro)) {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        margin: 0 -20px;
+        padding: 10px 20px;             /* top/bottom 10px 여백 → 카드 radius·shadow 잘림 방지 */
+        width: calc(100% + 40px);
+        max-width: none;                /* desktop max-width 1100 override */
+        align-items: flex-start;        /* stretch 제거 → 카드들 자연 높이로 (radius 클리핑 방지) */
+        justify-content: flex-start;    /* desktop justify-content:center override → 첫 카드부터 노출 */
+      }
+      .instructor-row:not(:has(.instructor-intro))::-webkit-scrollbar { display: none; }
+
       .instructor-intro { width: 100%; gap: 16px; padding-bottom: 17px; }
-      .instructor-card { flex: none; width: 100%; max-width: 100%; }
-      .instructor-img { width: 100%; height: 240px; }
-      .instructor-label { top: 20px; left: 20px; }
+      /* 카드 공통 */
+      .instructor-card { flex: none; max-width: 100%; }
+      .instructor-img { height: 240px; }
+      /* 모바일에서 이미지를 우측 상단 기준으로 정렬 — Figma의 right-0 매칭 (인물 실루엣이 우측에 위치) */
+      .instructor-img > img { object-position: right top; }
+      .instructor-label { top: 25px; left: 25px; gap: 6px; }   /* Figma top-25, left-25 */
       .instructor-label .role { font-size: 17px; }
       .instructor-label .name { font-size: 24px; }
-      .instructor-info { width: 100%; padding: 20px; gap: 10px; }
+      .instructor-info { padding: 25px; gap: 10px; }   /* Figma p-25 */
       .instructor-position, .instructor-bio { font-size: 15px; }
-      .instructor-disclaimer { font-size: 15px; }
+
+      /* 강사(lead) 카드 — 멘토와 동일하게 300 wide. 이미지 배경만 gy-07로 차별화 */
+      .instructor-card--lead { width: 300px; max-width: 300px; }
+      .instructor-card--lead .instructor-img {
+        width: 100%;
+        background: #767676;       /* Figma gy-07 (강사 카드만 다름) */
+      }
+      .instructor-card--lead .instructor-info { width: 100%; }
+      .instructor-card--lead .instructor-label { gap: 5px; }   /* Figma 강사 카드만 gap-5 */
+
+      /* 멘토 카드: 300 wide */
+      .instructor-row:not(:has(.instructor-intro)) .instructor-card {
+        flex: 0 0 300px;
+        width: 300px;
+      }
+      .instructor-row:not(:has(.instructor-intro)) .instructor-img { width: 300px; }
+      .instructor-row:not(:has(.instructor-intro)) .instructor-info { width: 300px; }
+
+      /* 강사 카드가 캐러셀에 합쳐졌을 때 — 멘토와 동일하게 300 wide */
+      .instructor-row:not(:has(.instructor-intro)) .instructor-card--lead {
+        flex: 0 0 300px;
+        width: 300px;
+      }
+      .instructor-row:not(:has(.instructor-intro)) .instructor-card--lead .instructor-img { width: 300px; }
+      .instructor-row:not(:has(.instructor-intro)) .instructor-card--lead .instructor-info { width: 300px; }
+
+      /* 안내문구: 멘토 캐러셀 바로 아래에 위치 (gap 10) */
+      .instructor-disclaimer {
+        font-size: 13px;                  /* Figma Caption1/R */
+        line-height: 1;
+        letter-spacing: 0;
+        color: #767676;
+        margin-top: -20px;                /* 섹션 gap 30 → 효과적 10px (carousel ↔ disclaimer) */
+      }
       .ax-section.faq { padding: 80px 20px; gap: 40px; }   /* prev instructors 다름=160 (80+80), bottom 80 마지막 */
       .faq-section-title { font-size: 22px; }
       .faq-q { font-size: 15px; }
@@ -2063,6 +2263,20 @@
       .instructor-intro {
         gap: 5px;
       }
+
+      /* 모바일 노트/disclaimer 텍스트 일괄 — Mobile Event Caption1/R
+         13px Regular, line-height 1.7, letter-spacing 0
+         (가격섹션 .price-notes li 는 이전 스타일 유지하므로 제외) */
+      .curriculum-disclaimer,
+      .reference-disclaimer,
+      .instructor-disclaimer,
+      .step-body .sub-note,
+      .step-meta-content p.sub-note {
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 1.7;
+        letter-spacing: 0;
+      }
     }
   </style>
 </head>
@@ -2111,7 +2325,7 @@
 
   <section class="ax-section signal">
     <div class="signal-intro">
-      <h2 class="signal-title">이미 시장은 AI를 쓰는 마케터에서<br>AI로 일하는 마케터로 넘어가고 있습니다</h2>
+      <h2 class="signal-title">이미 시장은<br class="mobile-br">AI를 쓰는 마케터에서<br>AI로 일하는 마케터로<br class="mobile-br">넘어가고 있습니다</h2>
       <div class="signal-body">
         <p>이제 중요한 건 AI 툴을 한 번 써보는 경험이 아닙니다.</p>
         <p>성과 차이는 실무 흐름 안에 AI를 얼마나 제대로 연결했는지에서 벌어집니다.</p>
@@ -2132,7 +2346,7 @@
         <p>McKinsey는 AI가 마케팅 조직의 업무 효율과 속도를 높이는 핵심 기술이 되고 있다고 분석했습니다.</p>
       </article>
       <article class="signal-card emphasis">
-        <h3><span class="highlight">하지만</span> ‘도구’로 쓰는 수준에 머무는 경우가 대다수</h3>
+        <h3><span class="highlight">하지만</span> ‘도구’로 쓰는 수준에<br class="mobile-br">머무는 경우가 대다수</h3>
         <p>76%의 조직이 AI로 속도 개선을 경험했지만, 데이터 품질이 충분하다고 답한 조직은 44%에 그쳤습니다.</p>
       </article>
     </div>
@@ -2237,7 +2451,7 @@
             <span class="tab-week">3주</span><span class="tab-title">AI 콘텐츠 운영 자동화 설계</span>
           </button>
           <button class="tab-item" type="button" data-week="4" role="tab">
-            <span class="tab-week">4주</span><span class="tab-title">마케터 AX 포트폴리오 완성</span>
+            <span class="tab-week">4주</span><span class="tab-title">업무 적용 결과와 성과 정리하기</span>
           </button>
         </div>
 
@@ -2260,10 +2474,10 @@
           </div>
           <div class="detail-row">
             <span class="detail-label">과제</span>
-            <div id="curriculumWeekAssignment">
-              <p>❶ 실제 브랜드(본인 회사 or 가상) 기준으로 AI 숏폼 콘텐츠 1편 제작</p>
-              <p>❷ AI 콘텐츠 제작 Before/After 비교 문서</p>
-            </div>
+            <ul id="curriculumWeekAssignment">
+              <li>실제 브랜드(본인 회사 or 가상) 기준으로 AI 숏폼 콘텐츠 1편 제작</li>
+              <li>AI 콘텐츠 제작 Before/After 비교 문서</li>
+            </ul>
           </div>
           <div class="detail-row">
             <span class="detail-label">산출물</span>
@@ -2299,8 +2513,8 @@
             <div class="tool-body">
               <h4 class="tool-name">ChatGPT</h4>
               <ul>
-                <li>프롬프트 설계, 초안 작성, 구조화, 아이디어 확장 등 전 회차 기본 툴</li>
-                <li>Plus : 월 $20</li>
+                <li>프롬프트 설계, 초안 작성, 구조화,<br class="mobile-br">아이디어 확장 등 전 회차 기본 툴</li>
+                <li>Plus · 월 $20</li>
               </ul>
             </div>
           </article>
@@ -2312,8 +2526,8 @@
             <div class="tool-body">
               <h4 class="tool-name">Claude</h4>
               <ul>
-                <li>긴 글 정리, 문장 다듬기, 포트폴리오 문서 보완</li>
-                <li>Pro : 월 $20 (연간 할인 기준 월 약 $17)</li>
+                <li>긴 글 정리, 문장 다듬기,<br class="mobile-br">포트폴리오 문서 보완</li>
+                <li>Plus · 월 $20 (연간 할인 기준 월 약 $17)</li>
               </ul>
             </div>
           </article>
@@ -2327,8 +2541,8 @@
             <div class="tool-body">
               <h4 class="tool-name">Canva</h4>
               <ul>
-                <li>썸네일, 콘텐츠 시안, 간단한 디자인.</li>
-                <li>Pro : 월 약 $10 (1인 기준 연 $120)</li>
+                <li>썸네일, 콘텐츠 시안,<br class="mobile-br">간단한 디자인</li>
+                <li>Plus · 월 $20</li>
               </ul>
             </div>
           </article>
@@ -2341,7 +2555,7 @@
               <h4 class="tool-name">CapCut</h4>
               <ul>
                 <li>숏폼 편집 실습</li>
-                <li>Pro : 월 $19.99</li>
+                <li>Plus · 월 $20</li>
               </ul>
             </div>
           </article>
@@ -2353,8 +2567,8 @@
             <div class="tool-body">
               <h4 class="tool-name">Gamma</h4>
               <ul>
-                <li>문서 정리, 발표 자료, 스토리라인 정리</li>
-                <li>Plus : 월 $9</li>
+                <li>문서 정리, 발표 자료,<br class="mobile-br">스토리라인 정리</li>
+                <li>Plus · 월 $20</li>
               </ul>
             </div>
           </article>
@@ -2570,7 +2784,7 @@
       </div>
       <article class="instructor-card instructor-card--lead">
         <div class="instructor-img">
-          <img src="instructor_kim.webp" alt="강사 김기수" loading="lazy" decoding="async">
+          <img src="instructor_kimm.webp" alt="강사 김기수" loading="lazy" decoding="async">
           <div class="instructor-label">
             <p class="role">강사</p>
             <p class="name">김기수</p>
@@ -2612,7 +2826,7 @@
       </article>
       <article class="instructor-card">
         <div class="instructor-img">
-          <img src="instructor_kimm.webp" alt="멘토 김경수" loading="lazy" decoding="async">
+          <img src="instructor_kim.webp" alt="멘토 김경수" loading="lazy" decoding="async">
           <div class="instructor-label">
             <p class="role">멘토</p>
             <p class="name">김경수</p>
@@ -2869,8 +3083,8 @@
           '썸네일 A/B 베리에이션 자동 생성',
         ],
         assignment: [
-          '❶ 실제 브랜드(본인 회사 or 가상) 기준으로 AI 숏폼 콘텐츠 1편 제작',
-          '❷ AI 콘텐츠 제작 Before/After 비교 문서',
+          '실제 브랜드(본인 회사 or 가상) 기준으로 AI 숏폼 콘텐츠 1편 제작',
+          'AI 콘텐츠 제작 Before/After 비교 문서',
         ],
         deliverables: [
           'AI 숏폼 콘텐츠 1편',
@@ -2891,8 +3105,8 @@
           '[케이스 리뷰] SEO 자동화로 오가닉 트래픽 증가시킨 사례',
         ],
         assignment: [
-          '❶ 멀티채널 콘텐츠 운영 설계안 또는 채널별 리퍼포징 콘텐츠 세트 제작',
-          '❷ 채널별 검색 유입 기대효과 one page 문서',
+          '멀티채널 콘텐츠 운영 설계안 또는 채널별 리퍼포징 콘텐츠 세트 제작',
+          '채널별 검색 유입 기대효과 one page 문서',
         ],
         deliverables: [
           '채널별 리퍼포징 콘텐츠 세트',
@@ -2910,7 +3124,7 @@
           '[케이스 리뷰] 도입 전후 시간 절감·생산성 향상 데이터 분석',
         ],
         assignment: [
-          '❶ 내 업무 자동화 가능 영역 매핑표 작성',
+          '내 업무 자동화 가능 영역 매핑표 작성',
           '※ (선택 과제) 마케팅 자동화 워크플로우 설계서 작성 (자유 과제)',
         ],
         deliverables: [
@@ -2919,7 +3133,7 @@
         ],
       },
       '4': {
-        title: '마케터 AX 포트폴리오 완성',
+        title: '업무 적용 결과와 성과 정리하기',
         schedule: '6. 11. (목) 19:00 – 21:00',
         topics: [
           '업무 적용 결과를 한눈에 정리하는 구조 만들기',
@@ -2929,7 +3143,7 @@
           '교육 이후에도 바로 활용할 수 있는 개인 업무 운영 방식 정리',
         ],
         assignment: [
-          '❶ 업무 적용 결과 정리 문서 작성',
+          '업무 적용 결과 정리 문서 작성',
           '※ (선택 과제) AI 도입 전후 성과 비교 문서 작성',
         ],
         deliverables: [
@@ -2947,7 +3161,7 @@
       document.getElementById('curriculumWeekTopics').innerHTML =
         data.topics.map(t => `<li>${t}</li>`).join('');
       document.getElementById('curriculumWeekAssignment').innerHTML =
-        data.assignment.map(t => `<p>${t}</p>`).join('');
+        data.assignment.map(t => `<li>${t}</li>`).join('');
       document.getElementById('curriculumWeekDeliverables').innerHTML =
         data.deliverables.map(t => `<li>${t}</li>`).join('');
       document.querySelectorAll('.tab-item').forEach(btn => {
@@ -2975,7 +3189,7 @@
         </div>
         <div class="detail-row">
           <span class="detail-label">과제</span>
-          <div>${data.assignment.map(t => `<p>${t}</p>`).join('')}</div>
+          <ul>${data.assignment.map(t => `<li>${t}</li>`).join('')}</ul>
         </div>
         <div class="detail-row">
           <span class="detail-label">산출물</span>
@@ -3065,6 +3279,34 @@
         if (card) card.classList.toggle('is-open');
       });
     });
+
+    /* ── 모바일: 강사 카드를 멘토 캐러셀 첫 위치로 이동 ─────────── */
+    (function setupInstructorMobileLayout() {
+      const mq = window.matchMedia('(max-width: 768px)');
+      const rows = document.querySelectorAll('.ax-section.instructors .instructor-row');
+      const leadCard = document.querySelector('.instructor-card--lead');
+      if (rows.length < 2 || !leadCard) return;
+      const introRow = rows[0];
+      const mentorRow = rows[1];
+
+      function apply() {
+        if (mq.matches) {
+          /* 모바일: 강사 카드 → 멘토 row 시작 위치 */
+          if (leadCard.parentElement !== mentorRow) {
+            mentorRow.insertBefore(leadCard, mentorRow.firstElementChild);
+          }
+        } else {
+          /* 데스크톱: 강사 카드 → 인트로 row 복귀 */
+          if (leadCard.parentElement !== introRow) {
+            introRow.appendChild(leadCard);
+          }
+        }
+      }
+
+      apply();
+      if (mq.addEventListener) mq.addEventListener('change', apply);
+      else if (mq.addListener) mq.addListener(apply);  /* legacy fallback */
+    })();
 
     /* ── 모바일: 글래스 프로스트 카드 스크롤 자동 focus ─────────
        카드가 뷰포트 중앙 영역(상하 40% 잘라낸 중간 20% strip)에
@@ -3250,9 +3492,8 @@
       // 첫 클릭부터 안내 UI 숨김
       hideIntroHint();
 
-      // 모든 클릭에서 MARKETING ↔ FRONTIERS 토글만 수행
-      textState = (textState + 1) % TEXT_STATES.length;
-      setBackgroundText(TEXT_STATES[textState]);
+      // 키캡 클릭 → 다음 섹션으로 스크롤
+      scrollToNextSection();
     });
 
     // ── 조명 (HDRI 로드 전 폴백) ───────────────────────────────────
@@ -3283,13 +3524,21 @@
     scene.add(lightFront);
 
     // ── HDRI (반사·굴절용) ─────────────────────────────────────────
-    new RGBELoader().load(
-      'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_09_1k.hdr',
-      hdr => {
-        hdr.mapping = THREE.EquirectangularReflectionMapping;
-        scene.environment = hdr;
-      }
-    );
+    //    초기 렌더에 필수 아님 → idle 시점에 로드해 첫 페인트 차단하지 않음
+    function loadHDRI() {
+      new RGBELoader().load(
+        'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_09_1k.hdr',
+        hdr => {
+          hdr.mapping = THREE.EquirectangularReflectionMapping;
+          scene.environment = hdr;
+        }
+      );
+    }
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(loadHDRI, { timeout: 1500 });
+    } else {
+      setTimeout(loadHDRI, 600);
+    }
 
     // ── 배경 텍스트: 사전 생성된 SVG 아웃라인 사용 (font metrics 의존 제거) ──
     const TEXT_STATES = ['MARKETING', 'FRONTIERS'];
@@ -3333,6 +3582,7 @@
       new THREE.MeshBasicMaterial({
         map: textTextures[TEXT_STATES[textState]],
         toneMapped: false,
+        /* transparent: false 유지 — 키캡 transmission이 opaque 패스 샘플링 가능하도록 */
       })
     );
     textPlane.position.set(0, 0, -25);
@@ -3346,6 +3596,71 @@
       textPlane.material.needsUpdate = true;
       resizeTextPlane();
     }
+
+    /* ── MARKETING ↔ FRONTIERS 자동 스왑 애니메이션 ─────────────
+       슬라이드 업 → 텍스처 교체 → 슬라이드 업 (텍스트가 카메라 뷰 위로 사라졌다 아래에서 올라옴)
+       — opacity 페이드 대신 슬라이드만 사용 (transparent: true는 키캡 transmission 깨뜨림) */
+    let textSwapAnimating = false;
+    function animateTextSwap() {
+      if (textSwapAnimating) return;
+      textSwapAnimating = true;
+
+      const newIdx = (textState + 1) % TEXT_STATES.length;
+      const newName = TEXT_STATES[newIdx];
+      const baseY = textPlane.position.y;
+      const halfDur = 320;          // ms — half-cycle (살짝 늘려 부드럽게)
+      const slideY = 0.8;           // 슬라이드 거리 (월드 유닛, 살짝 키움)
+      let switched = false;
+      const startTime = performance.now();
+
+      /* easeOutBack — 도착 직전 오버슛해서 쫄깃한 텐션감 부여 (c1 강화) */
+      function easeOutBack(t) {
+        const c1 = 2.5;             // 1.70158 → 2.5 더 큰 오버슛
+        const c3 = c1 + 1;
+        return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+      }
+
+      function step() {
+        const elapsed = performance.now() - startTime;
+
+        if (elapsed < halfDur) {
+          /* Phase 1: 아래로 슬라이드 아웃 (이전 텍스트가 아래로 빠짐) */
+          const t = elapsed / halfDur;
+          const eased = t * t;       // ease-in-quad
+          textPlane.position.y = baseY - eased * slideY;
+          requestAnimationFrame(step);
+          return;
+        }
+
+        if (!switched) {
+          /* 중간 지점: 텍스처 교체 + 위쪽으로 위치 리셋 */
+          setBackgroundText(newName);
+          textState = newIdx;
+          textPlane.position.y = baseY + slideY;
+          switched = true;
+        }
+
+        const elapsed2 = elapsed - halfDur;
+        if (elapsed2 < halfDur) {
+          /* Phase 2: 위에서 아래로 슬라이드 인 + 텐션감 오버슛 */
+          const t = elapsed2 / halfDur;
+          const eased = easeOutBack(t);
+          textPlane.position.y = (baseY + slideY) - eased * slideY;
+          requestAnimationFrame(step);
+          return;
+        }
+
+        /* 종료 */
+        textPlane.position.y = baseY;
+        textSwapAnimating = false;
+      }
+      step();
+    }
+
+    /* 페이지 로드 2초 후 시작, 매 3.5초마다 스왑 */
+    setTimeout(() => {
+      setInterval(animateTextSwap, 3500);
+    }, 2000);
 
     function getSidePadPx() {
       if (innerWidth <= 768)  return 32;
