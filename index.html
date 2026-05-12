@@ -1856,7 +1856,7 @@
       /* 모바일: 1열 stack */
       .testimonial-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
       .testimonial-card { flex: none; width: auto; min-height: auto; padding: 20px; gap: 20px; }
-      .testimonial-card p { font-size: 14px; }
+      .testimonial-card p { font-size: 15px; }
       .satisfaction-title { font-size: 22px; }
       /* 모바일: 만족도·추천 의향 2열 / AX 역량 성장 체감은 두 컬럼 가득 */
       .satisfaction-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
@@ -2012,6 +2012,56 @@
       .instructor-info {
         border-bottom-left-radius: 18px;
         border-bottom-right-radius: 18px;
+      }
+
+      /* ── 모바일 헤드라인 통일 (인트로 제외) ──────────────────────
+         h2 → Mobile Event H5_Title/M  (28px Medium, line-height 1.5)
+         p  → Mobile Event Body1/R     (16px Regular, line-height 1.7)
+         h2 ↔ p gap = 5px  /  headline ↔ content gap = 30px */
+      .problem-headline h2,
+      .signal-title,
+      .solution-title,
+      .outcome-headline h2,
+      .curriculum-title,
+      .tools-title,
+      .reference-title,
+      .benefits-title,
+      .schedule-title,
+      .price-title,
+      .instructor-title {
+        font-size: 28px;
+        font-weight: 500;
+        line-height: 1.5;
+        letter-spacing: -0.015em;
+      }
+      .problem-headline-body,
+      .signal-body,
+      .solution-body,
+      .outcome-headline-body,
+      .tools-desc,
+      .reference-desc,
+      .benefits-desc,
+      .satisfaction-desc,
+      .schedule-desc,
+      .price-desc,
+      .instructor-desc {
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 1.7;
+        letter-spacing: -0.01em;
+      }
+      .problem-headline,
+      .signal-intro,
+      .solution-intro,
+      .outcome-headline,
+      .curriculum-head,
+      .tools-head,
+      .reference-head,
+      .benefits-head,
+      .schedule-head,
+      .price-head,
+      .instructor-intro {
+        gap: 5px;
       }
     }
   </style>
