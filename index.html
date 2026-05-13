@@ -3463,37 +3463,25 @@
       }
     }
 
-    // 더블클릭 → 다음 섹션으로 스크롤
-    window.addEventListener('dblclick', (e) => {
-      const target = e.target;
-      if (target && target.closest &&
-          target.closest('button, a, input, textarea, select, label, [role="tab"], [role="button"]')) {
-        return;
-      }
-      scrollToNextSection();
-    });
-
+    /* 단일 클릭 → 키캡 누름 + 텍스트 스왑 (스크롤 다운 없음)
+       - 인터랙티브 엘리먼트(버튼·탭·아코디언 등)는 자체 동작 보장
+       - 클릭과 동시에 자동 루프(autoPressAndSwap) 호출 */
     window.addEventListener('mousedown', (e) => {
       // 좌클릭만 처리 — 우클릭/휠클릭은 무시
       if (e.button !== 0) return;
 
-      // 인터랙티브 엘리먼트(탭/링크/버튼 등) 클릭은 무시 — UI 본연 동작 유지
       const target = e.target;
-      if (target && target.closest &&
-          target.closest('button, a, input, textarea, select, label, [role="tab"], [role="button"]')) {
-        return;
+      if (target && target.closest) {
+        if (target.closest('button, a, input, textarea, select, label, [role="tab"], [role="button"], .step-head, .tab-item')) {
+          return;
+        }
       }
-
-      // 키캡 누름 애니메이션
-      pressYTarget = 0.85;
-      if (pressTimer) clearTimeout(pressTimer);
-      pressTimer = setTimeout(() => { pressYTarget = 1; }, 110);
 
       // 첫 클릭부터 안내 UI 숨김
       hideIntroHint();
 
-      // 키캡 클릭 → 다음 섹션으로 스크롤
-      scrollToNextSection();
+      // 클릭 → 키캡 누름 + 텍스트 스왑 (자동 루프와 동일한 인터랙션)
+      autoPressAndSwap();
     });
 
     // ── 조명 (HDRI 로드 전 폴백) ───────────────────────────────────
@@ -3608,58 +3596,73 @@
       const newIdx = (textState + 1) % TEXT_STATES.length;
       const newName = TEXT_STATES[newIdx];
       const baseY = textPlane.position.y;
-      const halfDur = 320;          // ms — half-cycle (살짝 늘려 부드럽게)
-      const slideY = 0.8;           // 슬라이드 거리 (월드 유닛, 살짝 키움)
-      let switched = false;
-      const startTime = performance.now();
+      const delay = 40;             // ms — 키캡 누름 직후 약간 늦게 시작
+      const dur = 260;              // ms — 슬라이드 인 지속 시간 (40 ~ 300ms)
+      const slideY = 2;             // 슬라이드 거리 (월드 유닛)
 
-      /* easeOutBack — 도착 직전 오버슛해서 쫄깃한 텐션감 부여 (c1 강화) */
+      /* easeOutBack — 도착 직전 오버슛해서 쫄깃한 텐션감 부여 (c1 증가 → 오버슛 폭 확장) */
       function easeOutBack(t) {
-        const c1 = 2.5;             // 1.70158 → 2.5 더 큰 오버슛
+        const c1 = 3.5;
         const c3 = c1 + 1;
         return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
       }
 
-      function step() {
-        const elapsed = performance.now() - startTime;
+      /* 10ms 지연 후 텍스처 교체 + 슬라이드 시작 */
+      setTimeout(() => {
+        setBackgroundText(newName);
+        textState = newIdx;
+        textPlane.position.y = baseY + slideY;
 
-        if (elapsed < halfDur) {
-          /* Phase 1: 아래로 슬라이드 아웃 (이전 텍스트가 아래로 빠짐) */
-          const t = elapsed / halfDur;
-          const eased = t * t;       // ease-in-quad
-          textPlane.position.y = baseY - eased * slideY;
-          requestAnimationFrame(step);
-          return;
+        const startTime = performance.now();
+        function step() {
+          const elapsed = performance.now() - startTime;
+          if (elapsed < dur) {
+            /* 위에서 아래로 슬라이드 인 + 텐션감 오버슛 */
+            const t = elapsed / dur;
+            const eased = easeOutBack(t);
+            textPlane.position.y = (baseY + slideY) - eased * slideY;
+            requestAnimationFrame(step);
+            return;
+          }
+          textPlane.position.y = baseY;
+          textSwapAnimating = false;
         }
-
-        if (!switched) {
-          /* 중간 지점: 텍스처 교체 + 위쪽으로 위치 리셋 */
-          setBackgroundText(newName);
-          textState = newIdx;
-          textPlane.position.y = baseY + slideY;
-          switched = true;
-        }
-
-        const elapsed2 = elapsed - halfDur;
-        if (elapsed2 < halfDur) {
-          /* Phase 2: 위에서 아래로 슬라이드 인 + 텐션감 오버슛 */
-          const t = elapsed2 / halfDur;
-          const eased = easeOutBack(t);
-          textPlane.position.y = (baseY + slideY) - eased * slideY;
-          requestAnimationFrame(step);
-          return;
-        }
-
-        /* 종료 */
-        textPlane.position.y = baseY;
-        textSwapAnimating = false;
-      }
-      step();
+        step();
+      }, delay);
     }
 
-    /* 페이지 로드 2초 후 시작, 매 3.5초마다 스왑 */
+    /* ── 자동 루프: 키캡 누름 모션 + 텍스트 스왑 동시 발동 ─────────
+       - 둥둥 뜨는 모션 대체용
+       - press: scale.y 0.85까지 압축 후 1로 복귀 (전역 pressYTarget 사용)
+       - 동시에 background 텍스트 MARKETING ↔ FRONTIERS 슬라이드 */
+    function autoPressAndSwap() {
+      /* 키캡 누름 모션 — 외부 click 핸들러와 동일한 변수 사용 */
+      pressYTarget = 0.85;
+      if (pressTimer) clearTimeout(pressTimer);
+      pressTimer = setTimeout(() => { pressYTarget = 1; }, 140);
+
+      /* 동시에 텍스트 스왑 모션 */
+      animateTextSwap();
+    }
+
+    /* 마우스 움직임 감지 — 움직이는 동안 자동 루프 일시정지 (0.1초간 정지 시 재개) */
+    let lastMouseActivity = 0;
+    const AUTO_IDLE_THRESHOLD = 100;    // ms
+    window.addEventListener('mousemove', () => {
+      lastMouseActivity = performance.now();
+    }, { passive: true });
+
+    /* 페이지 로드 2초 후 시작, 매 3.5초마다 자동 클릭 + 텍스트 스왑
+       조건: (1) 인트로 섹션 안에 있을 때만, (2) 최근 마우스 움직임 없을 때 */
     setTimeout(() => {
-      setInterval(animateTextSwap, 3500);
+      autoPressAndSwap();
+      setInterval(() => {
+        const atIntro = window.scrollY < window.innerHeight * 0.5;
+        const mouseIdle = performance.now() - lastMouseActivity > AUTO_IDLE_THRESHOLD;
+        if (atIntro && mouseIdle) {
+          autoPressAndSwap();
+        }
+      }, 3500);
     }, 2000);
 
     function getSidePadPx() {
@@ -3876,9 +3879,9 @@
         const visW = visH * camera.aspect;
         const FOLLOW_POS_X = 0.40;   // 화면 너비의 ±40%까지 따라옴
         const FOLLOW_POS_Y = 0.35;   // 화면 높이의 ±35%까지 따라옴
-        const floatY = Math.sin(t * 1.1) * (RADIUS * 0.03);     // 둥둥 뜨는 모션 (진폭·주기 강화)
+        // 둥둥 뜨는 모션 제거 — 자동 click 루프(키캡 누름 + 텍스트 스왑)로 대체
         const targetPosX =  followNX * visW * FOLLOW_POS_X;
-        const targetPosY = -followNY * visH * FOLLOW_POS_Y + modelBaseY + floatY + embedShiftY;
+        const targetPosY = -followNY * visH * FOLLOW_POS_Y + modelBaseY + embedShiftY;
 
         // 더 빠른 추적 (damping 0.05 → 0.10)
         model.position.x += (targetPosX - model.position.x) * 0.10;
