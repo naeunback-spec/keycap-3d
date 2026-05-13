@@ -3645,9 +3645,9 @@
       animateTextSwap();
     }
 
-    /* 마우스 움직임 감지 — 움직이는 동안 자동 루프 일시정지 (0.1초간 정지 시 재개) */
+    /* 마우스 움직임 감지 — 움직이는 동안 자동 루프 일시정지 (1초간 정지 시 재개) */
     let lastMouseActivity = 0;
-    const AUTO_IDLE_THRESHOLD = 100;    // ms
+    const AUTO_IDLE_THRESHOLD = 1000;   // ms
     window.addEventListener('mousemove', () => {
       lastMouseActivity = performance.now();
     }, { passive: true });
