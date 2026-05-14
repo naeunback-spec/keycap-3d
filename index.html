@@ -124,7 +124,7 @@
       color: #fff;
       font-family: 'Wanted Sans Variable', 'Wanted Sans', sans-serif;
       font-size: 15px;                        /* Figma Label1/SB */
-      font-weight: 600;                       /* SemiBold */
+      font-weight: 500;                       /* Medium */
       line-height: 1.7;
       letter-spacing: -0.01em;                /* -0.15 / 15 */
       white-space: nowrap;
@@ -167,6 +167,8 @@
     }
     /* 모바일 전용 줄바꿈 — 데스크탑에선 숨김 */
     .mobile-br { display: none; }
+    /* 데스크탑 전용 줄바꿈 — 모바일에선 숨김 */
+    .desktop-br { display: inline; }
 
     /* ── 하단 정보 영역 (좌: subtitle / 우: 부가 텍스트, 하단 정렬) ─── */
     .ax-footer {
@@ -1670,12 +1672,14 @@
       .ax-header { top: 32px; width: calc(100% - 40px); gap: 16px; }
       .ax-eyebrow { font-size: 14px; }
       .ax-headline-group { gap: 8px; }
-      .ax-title { font-size: 32px; line-height: 1.4; }
+      .ax-title { font-size: 36px; line-height: 1.4; }
       .ax-subtitle { font-size: 16px; }
+      .ax-intro-hint { width: 180px; height: 48px; font-size: 14px; }   /* 모바일에서 박스/텍스트 살짝 축소 */
       .mobile-br { display: inline; }
+      .desktop-br { display: none; }
       .ax-footer { bottom: 32px; width: calc(100% - 40px); font-size: 15px; }
       .ax-footer br.m-only { display: initial; }   /* 모바일: 각 어구마다 줄바꿈 */
-      .ax-section.problem { padding: 160px 20px 40px; }   /* intro→problem 배경 다름 = 160, →signal 같음 = 40 */
+      .ax-section.problem { padding: 80px 20px 40px; }   /* intro→problem 80, →signal 같음 = 40 */
       /* 모바일: 헤드라인 위 / 카드 4개 2×2 그리드 (15px gap) */
       .problem-grid { gap: 30px; }
       .problem-headline { gap: 24px; }
@@ -1701,18 +1705,18 @@
       .signal-card h3 br.mobile-br { display: inline; }
       .signal-body { font-size: 16px; font-weight: 400; line-height: 1.7; letter-spacing: -0.01em; }   /* Figma Body1/R */
       .signal-card h3 { font-size: 16px; font-weight: 600; line-height: 1.7; letter-spacing: -0.01em; }   /* Figma Body3/SB */
-      .signal-grid { display: flex; flex-direction: column; gap: 20px; }
+      .signal-grid { display: flex; flex-direction: column; gap: 30px; }
       .signal-card {
         flex: none;
         width: 100%;
-        padding: 10px 0 0;              /* Figma pt-[10px] */
+        padding: 20px 0 0;              /* 디바이더 ↔ 텍스트 컨테이너 간격 20px */
         gap: 10px;
         border-top: 1px solid #14191e;
       }
       .signal-card.emphasis {
         height: auto;
         min-height: 0;
-        padding: 10px 0 0;              /* Figma pt-[10px] */
+        padding: 20px 0 0;              /* 디바이더 ↔ 텍스트 컨테이너 간격 20px */
         background: transparent;
         border-top-width: 3px;
       }
@@ -1844,7 +1848,7 @@
       .detail-row ul { padding-left: 22px; margin-left: 0; }
       /* 섹션 07 Tools 모바일 — Figma 13077:16015 (캐러셀 디자인) */
       .ax-section.tools {
-        background: #f8f8f8;            /* Figma gy-01 */
+        background: #f2f1f1;            /* curriculum 섹션과 동일 배경 */
         padding: 40px 20px 80px;        /* prev same, next reference 다름=160 */
         gap: 30px;
         align-items: stretch;            /* 캐러셀이 가로 폭 100% 차지 */
@@ -1909,8 +1913,8 @@
         flex-direction: column;
       }
       .tool-name {
-        font-size: 18px;                /* Figma P_Headline2/B */
-        font-weight: 700;
+        font-size: 16px;
+        font-weight: 600;
         line-height: 1.5;
         letter-spacing: -0.01em;
       }
@@ -1924,7 +1928,7 @@
         flex: 1 1 auto;
       }
       .tool-card ul li {
-        font-size: 16px;                /* Figma Body3/R */
+        font-size: 15px;
         font-weight: 400;
         line-height: 1.7;
         letter-spacing: -0.01em;
@@ -1941,7 +1945,7 @@
         align-items: stretch;
       }
       .reference-group { gap: 30px; }   /* head ↔ testimonial-block */
-      .reference-block { gap: 10px; }   /* testimonial-grid ↔ disclaimer */
+      .reference-block { gap: 15px; }   /* testimonial-grid ↔ disclaimer */
       .satisfaction { gap: 10px; }      /* satisfaction-head ↔ cards */
       .satisfaction-head { gap: 5px; }
       .reference-title { font-size: 28px; font-weight: 500; line-height: 1.5; letter-spacing: -0.015em; }
@@ -1972,8 +1976,8 @@
         min-height: auto;
         justify-content: flex-start;
       }
-      .testimonial-card p { font-size: 16px; }
-      .testimonial-author { font-size: 16px; gap: 10px; margin-top: auto; }   /* 카드 하단 고정 */
+      .testimonial-card p { font-size: 15px; }
+      .testimonial-author { font-size: 15px; gap: 10px; margin-top: auto; }   /* 카드 하단 고정 */
 
       /* 만족도 카드 캐러셀 — label을 카드 안으로 (score-card-group이 visual card 역할) */
       .satisfaction-cards {
@@ -2028,7 +2032,7 @@
       .benefit-desc { flex: 0 0 auto; }
       /* 모바일: 헤더 / step 리스트 세로 stack, step row 내부도 세로 stack */
       /* 섹션 10 Schedule 모바일 — Figma 13067:3495 */
-      .ax-section.schedule { padding: 40px 20px; }   /* same-bg both sides */
+      .ax-section.schedule { padding: 20px 20px 40px; }   /* schedule 위 섹션과의 gap 40 (price bottom 20 + schedule top 20), 아래 동일 bg = 40 */
       .schedule-layout {
         flex-direction: column;
         gap: 30px;
@@ -2081,7 +2085,7 @@
         font-size: 15px;
       }
       .step-meta-label { width: 40px; }
-      .ax-section.price { padding: 40px 20px; gap: 30px; }   /* same-bg both sides */
+      .ax-section.price { padding: 120px 20px 40px; gap: 30px; }   /* benefits→price = 160 (40+120), price→instructors = 80 */
       .price-head { gap: 20px; }
       .price-title { font-size: 28px; font-weight: 500; line-height: 1.4; letter-spacing: -0.015em; }
       .price-desc { font-size: 15px; }
@@ -2137,8 +2141,15 @@
         padding: 10px 20px;             /* top/bottom 10px 여백 → 카드 radius·shadow 잘림 방지 */
         width: calc(100% + 40px);
         max-width: none;                /* desktop max-width 1100 override */
-        align-items: flex-start;        /* stretch 제거 → 카드들 자연 높이로 (radius 클리핑 방지) */
+        align-items: stretch;           /* 가장 긴 카드 높이에 맞춰 모든 카드 세로 통일 */
         justify-content: flex-start;    /* desktop justify-content:center override → 첫 카드부터 노출 */
+      }
+      /* 카드 내부 info 영역이 남는 vertical 공간을 채우도록 — bio 길이 차이로 인한 높이 차이 흡수 */
+      .instructor-row:not(:has(.instructor-intro)) .instructor-card {
+        align-self: stretch;
+      }
+      .instructor-row:not(:has(.instructor-intro)) .instructor-info {
+        flex: 1 1 auto;
       }
       .instructor-row:not(:has(.instructor-intro))::-webkit-scrollbar { display: none; }
 
@@ -2149,8 +2160,8 @@
       /* 모바일에서 이미지를 우측 상단 기준으로 정렬 — Figma의 right-0 매칭 (인물 실루엣이 우측에 위치) */
       .instructor-img > img { object-position: right top; }
       .instructor-label { top: 25px; left: 25px; gap: 6px; }   /* Figma top-25, left-25 */
-      .instructor-label .role { font-size: 17px; }
-      .instructor-label .name { font-size: 24px; }
+      .instructor-label .role { font-size: 12px; font-weight: 500; }
+      .instructor-label .name { font-size: 20px; font-weight: 600; }
       .instructor-info { padding: 25px; gap: 10px; }   /* Figma p-25 */
       .instructor-position, .instructor-bio { font-size: 15px; }
 
@@ -2288,7 +2299,7 @@
       <h1 class="ax-title">AI를 쓰는 마케터에서,<br>AI로 일하는 마케터로 성장하세요.</h1>
     </header>
 
-    <div class="ax-intro-hint" id="introHint">Press the keycap</div>
+    <div class="ax-intro-hint" id="introHint">Tap the Keycap</div>
 
     <footer class="ax-footer">
       <p class="ax-subtitle">6월 2일 개강 · <br class="m-only">선착순 50명</p>
@@ -2307,17 +2318,16 @@
       </div>
       <div class="problem-cards">
         <article class="problem-card">
-          <p>ChatGPT로 <br>카피 초안은 뽑는데, <br>결국 처음부터 <br>다시 쓴다</p>
+          <p>ChatGPT로<br class="desktop-br"> 카피 초안은 뽑는데,<br class="desktop-br"> 결국 처음부터<br class="desktop-br"> 다시 쓴다</p>
         </article>
         <article class="problem-card">
-          <p>AI 툴은 이것저것</p>
-          <p>써봤는데, 실무에 정착된 건 <br>하나도 없다</p>
+          <p>AI 툴은<br class="desktop-br"> 이것저것 써봤는데,<br class="desktop-br"> 실무에 정착된 건<br class="desktop-br"> 하나도 없다</p>
         </article>
         <article class="problem-card">
-          <p>콘텐츠 만들고, <br>광고 세팅하고, <br>보고서 쓰느라 <br>하루가 다 끝난다</p>
+          <p>콘텐츠 만들고,<br class="desktop-br"> 광고 세팅하고,<br class="desktop-br"> 보고서 쓰느라<br class="desktop-br"> 하루가 다 끝난다</p>
         </article>
         <article class="problem-card emphasis">
-          <p>다른 마케터는 <br>AI로 성과를 내고 있다는데, <br>나만 제자리인 것 같다</p>
+          <p>다른 마케터는<br class="desktop-br"> AI로 성과를 내고<br class="desktop-br"> 있다는데, 나만<br class="desktop-br"> 제자리인 것 같다</p>
         </article>
       </div>
     </div>
@@ -2325,7 +2335,7 @@
 
   <section class="ax-section signal">
     <div class="signal-intro">
-      <h2 class="signal-title">이미 시장은 <br class="mobile-br">AI를 쓰는 마케터에서 <br>AI로 일하는 마케터로 <br class="mobile-br">넘어가고 있습니다</h2>
+      <h2 class="signal-title">이미 시장은<br class="mobile-br"> AI를 쓰는 마케터에서<br class="mobile-br"> AI로 일하는 마케터로<br class="mobile-br"> 넘어가고 있습니다</h2>
       <div class="signal-body">
         <p>이제 중요한 건 AI 툴을 한 번 써보는 경험이 아닙니다.</p>
         <p>성과 차이는 실무 흐름 안에 AI를 얼마나 제대로 연결했는지에서 벌어집니다.</p>
@@ -2346,7 +2356,7 @@
         <p>McKinsey는 AI가 마케팅 조직의 업무 효율과 속도를 높이는 핵심 기술이 되고 있다고 분석했습니다.</p>
       </article>
       <article class="signal-card emphasis">
-        <h3><span class="highlight">하지만</span> ‘도구’로 쓰는 수준에 <br class="mobile-br">머무는 경우가 대다수</h3>
+        <h3><span class="highlight">하지만</span> ‘도구’로 쓰는 수준에<br class="mobile-br">머무는 경우가 대다수</h3>
         <p>76%의 조직이 AI로 속도 개선을 경험했지만, 데이터 품질이 충분하다고 답한 조직은 44%에 그쳤습니다.</p>
       </article>
     </div>
@@ -2513,7 +2523,7 @@
             <div class="tool-body">
               <h4 class="tool-name">ChatGPT</h4>
               <ul>
-                <li>프롬프트 설계, 초안 작성, 구조화,<br class="mobile-br">아이디어 확장 등 전 회차 기본 툴</li>
+                <li>프롬프트 설계, 초안 작성, 구조화,<br class="mobile-br"> 아이디어 확장 등 전 회차 기본 툴</li>
                 <li>Plus · 월 $20</li>
               </ul>
             </div>
@@ -2526,7 +2536,7 @@
             <div class="tool-body">
               <h4 class="tool-name">Claude</h4>
               <ul>
-                <li>긴 글 정리, 문장 다듬기,<br class="mobile-br">포트폴리오 문서 보완</li>
+                <li>긴 글 정리, 문장 다듬기,<br class="mobile-br"> 포트폴리오 문서 보완</li>
                 <li>Plus · 월 $20 (연간 할인 기준 월 약 $17)</li>
               </ul>
             </div>
@@ -2541,7 +2551,7 @@
             <div class="tool-body">
               <h4 class="tool-name">Canva</h4>
               <ul>
-                <li>썸네일, 콘텐츠 시안,<br class="mobile-br">간단한 디자인</li>
+                <li>썸네일, 콘텐츠 시안,<br class="mobile-br"> 간단한 디자인</li>
                 <li>Plus · 월 $20</li>
               </ul>
             </div>
@@ -2567,7 +2577,7 @@
             <div class="tool-body">
               <h4 class="tool-name">Gamma</h4>
               <ul>
-                <li>문서 정리, 발표 자료,<br class="mobile-br">스토리라인 정리</li>
+                <li>문서 정리, 발표 자료,<br class="mobile-br"> 스토리라인 정리</li>
                 <li>Plus · 월 $20</li>
               </ul>
             </div>
@@ -2624,7 +2634,7 @@
   <section class="ax-section reference">
     <div class="reference-group">
       <header class="reference-head">
-        <h2 class="reference-title">원티드가 먼저 검증한 <br class="mobile-br">AX 변화의 시작</h2>
+        <h2 class="reference-title">원티드가 먼저 검증한<br class="mobile-br"> AX 변화의 시작</h2>
         <div class="reference-desc">
           <p>반복 업무는 줄이고, 더 중요한 일에 집중하는 변화</p>
           <p>원티드는 그 AX 전환을 내부에서 먼저 경험하고 검증했습니다</p>
@@ -2705,7 +2715,7 @@
 
   <section class="ax-section benefits">
     <div class="benefits-head">
-      <h2 class="benefits-title">배우는 순간보다,<br>적용하는 순간이 더 기대되는 <br class="mobile-br">AX 챌린저 혜택</h2>
+      <h2 class="benefits-title">배우는 순간보다,<br>적용하는 순간이 더 기대되는<br class="mobile-br"> AX 챌린저 혜택</h2>
       <div class="benefits-desc">
         <p>현직자와 함께 점검하고, 밋업으로 연결되고, 수강 후에도 바로 활용할 수 있는 실무 자료로 이어집니다.</p>
       </div>
@@ -2850,7 +2860,7 @@
       </header>
 
       <div class="schedule-steps">
-        <article class="step-card is-open">
+        <article class="step-card">
           <div class="step-head">
             <p class="step-num">01</p>
             <h3 class="step-name">신청 &amp; 결제</h3>
@@ -3879,9 +3889,10 @@
         const visW = visH * camera.aspect;
         const FOLLOW_POS_X = 0.40;   // 화면 너비의 ±40%까지 따라옴
         const FOLLOW_POS_Y = 0.35;   // 화면 높이의 ±35%까지 따라옴
-        // 둥둥 뜨는 모션 제거 — 자동 click 루프(키캡 누름 + 텍스트 스왑)로 대체
+        // 살짝 둥둥 뜨는 모션 — 부드러운 sin 파동 (자동 press/text-swap과 공존)
+        const floatY = Math.sin(t * 1.2) * visH * 0.015;   // 진폭 ≈ 1.5% of viewport, 주기 ≈ 5.2s
         const targetPosX =  followNX * visW * FOLLOW_POS_X;
-        const targetPosY = -followNY * visH * FOLLOW_POS_Y + modelBaseY + embedShiftY;
+        const targetPosY = -followNY * visH * FOLLOW_POS_Y + modelBaseY + embedShiftY + floatY;
 
         // 더 빠른 추적 (damping 0.05 → 0.10)
         model.position.x += (targetPosX - model.position.x) * 0.10;
